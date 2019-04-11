@@ -47,23 +47,14 @@ namespace RoomListv2
                 CrestronEnvironment.ProgramStatusEventHandler += new ProgramStatusEventHandler(ControlSystem_ControllerProgramEventHandler);
                 CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(ControlSystem_ControllerEthernetEventHandler);
 
-                #region EISC
+                #region EISC Creation
                 if (this.SupportsEthernet)
                 {
                     EISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
                     for (uint i = 0; i < 40; i++)
                     {
                         EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "127.0.0.2", this));
-                    }
-
-                    foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in EISCs)
-                    {
-                        if (eisc.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
-                        {
-                            ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
-                        }
-                        eisc.OnlineStatusChange += new OnlineStatusChangeEventHandler(EISC_OnlineStatusChange);
-                    }                    
+                    }                   
                 }
                 #endregion
 
@@ -97,6 +88,20 @@ namespace RoomListv2
                     room.availabilityEvent += new Room.AvailabilityEvent(room_availabilityEvent);
                     room.updateEvent += new Room.UpdateEvent(room_updateEvent);
                     room.requestConnectionEvent += new Room.RequestConnectionEvent(room_requestConnectionEvent);
+                }
+                #endregion
+
+                #region EISC Register
+                if (this.SupportsEthernet)
+                {
+                    foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in EISCs)
+                    {
+                        if (eisc.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                        {
+                            ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
+                        }
+                        eisc.OnlineStatusChange += new OnlineStatusChangeEventHandler(EISC_OnlineStatusChange);
+                    } 
                 }
                 #endregion
 
