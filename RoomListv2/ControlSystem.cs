@@ -67,37 +67,11 @@ namespace RoomListv2
                 }
                 #endregion
 
+
                 #region Room Class: Initialize roomListDictionary
-                roomListDictionary = new Dictionary<uint, uint>();
-                roomSwitcherDictionary = new Dictionary<uint, uint>(); //Use this to pick which rooms go where
-                for (uint i = 1; i <= 40; i++)
-                {
-                    if (i < 4)
-                        roomListDictionary.Add(i, 1);
-                    else if (i < 10)
-                        roomListDictionary.Add(i, 2);
-                    else if (i < 20)
-                        roomListDictionary.Add(i, 3);
-                    else if (i < 31)
-                        roomListDictionary.Add(i, 4);
-                    else if (i < 38)
-                        roomListDictionary.Add(i, 5);
-                    else if (i <= 40)
-                        roomListDictionary.Add(i, 6);
-                }
-                for (uint i = 1; i <= 40; i++)
-                {
-                    if (i < 4)
-                        roomSwitcherDictionary.Add(i, 1);
-                    else if (i < 31)
-                        roomSwitcherDictionary.Add(i, 2);
-                    else if (i <= 40)
-                        roomSwitcherDictionary.Add(i, 3);
-                }
-
-
-
-
+                //Creates the Dictionary that holds the roomID and what list that roomID should live
+                BuildRoomListDictionary(40);
+                BuildRoomSwitcherDictionary(40);
                 #endregion
 
                 #region Room Class Instantiate Rooms
@@ -250,6 +224,40 @@ namespace RoomListv2
             catch (Exception e)
             {
                 ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
+            }
+        }
+
+        void BuildRoomListDictionary(uint numberOfRooms)
+        {
+            roomListDictionary = new Dictionary<uint, uint>();  //Create a new Dictionary to hold the list of rooms and their list number they belong in
+            for (uint i = 1; i <= numberOfRooms; i++)
+            {
+                if (i < 4)
+                    roomListDictionary.Add(i, 1);
+                else if (i < 10)
+                    roomListDictionary.Add(i, 2);
+                else if (i < 20)
+                    roomListDictionary.Add(i, 3);
+                else if (i < 31)
+                    roomListDictionary.Add(i, 4);
+                else if (i < 38)
+                    roomListDictionary.Add(i, 5);
+                else if (i <= 40)
+                    roomListDictionary.Add(i, 6);
+            }
+
+        }
+        void BuildRoomSwitcherDictionary(uint numberOfRooms)
+        {
+            roomSwitcherDictionary = new Dictionary<uint, uint>(); //Use this to pick which rooms go where
+            for (uint i = 1; i <= numberOfRooms; i++)
+            {
+                if (i < 4)
+                    roomSwitcherDictionary.Add(i, 1);
+                else if (i < 31)
+                    roomSwitcherDictionary.Add(i, 2);
+                else if (i <= 40)
+                    roomSwitcherDictionary.Add(i, 3);
             }
         }
 
