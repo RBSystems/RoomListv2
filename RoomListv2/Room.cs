@@ -63,6 +63,7 @@ namespace RoomListv2
         public bool AvailableForSending { set; get; }           //Is the room available for Receiving, gets sent to all other rooms
 
         private CTimer ProcessRoomTimer { set; get; }          //Timer to wait to process logic, using as a Re-Triggerable One Shot
+        private CTimer ProcessEISCTimer { set; get; }          //Timer to wait to process logic, using as a Re-Triggerable One Shot
         private bool _availabilityNeedsUpdate { set; get; }    //Used to notify if availability needs to be sent to other rooms
 
         public List<List<RoomListItem>> roomList { set; get; }  //Holds the list of all the other rooms without this room
@@ -109,7 +110,7 @@ namespace RoomListv2
             AvailableForLocalReceiving = false;
             Enabled = false;
             OverflowEnabled = false;
-            ReceivingSelected = false;
+            ReceivingSelected = true;
             _availabilityNeedsUpdate = false;
 
             //Set Input Class properties with default values
@@ -117,6 +118,7 @@ namespace RoomListv2
             Inputs = new RoomInputValues();
 
             ProcessRoomTimer = new CTimer(ProcessRoom, Timeout.Infinite);
+            ProcessEISCTimer = new CTimer(ProcessEISC, Timeout.Infinite);
 
             #region Attach Event Handlers
             eisc.OnlineStatusChange += new Crestron.SimplSharpPro.OnlineStatusChangeEventHandler(eisc_OnlineStatusChange);
@@ -130,12 +132,10 @@ namespace RoomListv2
             switch (args.Sig.Type)
             {
                 case eSigType.Bool:
+                    //CrestronConsole.PrintLine("Received Bool Update from Sig: {0}, Value: {1}", args.Sig.Number, args.Sig.BoolValue);
                     #region Bool Switch Cases
                         switch (args.Sig.Number)
                         {
-                            case 1: //System Overflow Enabled
-                                setOverflow(args.Sig.BoolValue);
-                                break;
                             case 2: //Display 1 Enabled/Disabled
                                 Inputs.Displays[0].enabled = args.Sig.BoolValue;
                                 UpdateInputs();
@@ -164,8 +164,15 @@ namespace RoomListv2
                                 Inputs.Cameras[2].enabled = args.Sig.BoolValue;
                                 UpdateInputs();
                                 break;
+                            case 85: //System is On
+                                if(args.Sig.BoolValue)
+                                    setRoomState(args.Sig.BoolValue);
+                                //CrestronConsole.PrintLine("Room: {0}, Roomstate was set from Event Handler, State: {1}", Name, !args.Sig.BoolValue);
+                                break;
                             case 86: //System is Off
-                                setRoomState(!args.Sig.BoolValue);
+                                if(args.Sig.BoolValue)
+                                    setRoomState(!args.Sig.BoolValue);
+                                //CrestronConsole.PrintLine("Room: {0}, Roomstate was set from Event Handler, State: {1}", Name, !args.Sig.BoolValue);
                                 break;
                             case 87: //Clear All Receiving
                                 if (args.Sig.BoolValue)
@@ -176,10 +183,18 @@ namespace RoomListv2
                             case 91: //Send To Selected
                                 if(args.Sig.BoolValue)
                                     setReceivingSelected(false);
-                                else
-                                    setReceivingSelected(true);
                                 break;
                             case 92: //Receive From Room
+                                if (args.Sig.BoolValue)
+                                    setReceivingSelected(true);
+                                break;
+                            case 95: //System Overflow Enabled
+                                if(args.Sig.BoolValue)
+                                    setOverflow(!args.Sig.BoolValue);
+                                break;
+                            case 96: //System Overflow Disabled
+                                if(args.Sig.BoolValue)
+                                    setOverflow(args.Sig.BoolValue);
                                 break;
                             case 120: //Clear Sending Room
                                 if (args.Sig.BoolValue)
@@ -302,6 +317,7 @@ namespace RoomListv2
                     #endregion
                     break;
                 case eSigType.UShort:
+                    //CrestronConsole.PrintLine("Received analog Update from Sig: {0}, Value: {1}", args.Sig.Number, args.Sig.ShortValue);
                     #region UShort Switch Case
                     switch (args.Sig.Number)
                     {
@@ -359,57 +375,49 @@ namespace RoomListv2
                     #endregion
                     break;
                 case eSigType.String:
+                    //CrestronConsole.PrintLine("Received serial Update from Sig: {0}, Value {1}", args.Sig.Number, args.Sig.StringValue);
                     #region String Switch Case
                     switch (args.Sig.Number)
                     {
                         case 1: //Room Name
+                            CrestronConsole.PrintLine("Room ID: {0} Incoming Room Name", ID, args.Sig.StringValue); 
                             SetRoomName(args.Sig.StringValue);
                             break;
                         case 2: //Display 1 Name
                             Inputs.Displays[0].OutputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 3: //Display 1 Source Name
                             Inputs.Displays[0].InputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 4: //Display 2 Name
                             Inputs.Displays[1].OutputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 5: //Display 2 Source Name
                             Inputs.Displays[1].InputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 6: //Display 3 Name
                             Inputs.Displays[2].OutputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 7: //Display 3 Source Name
                             Inputs.Displays[2].InputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 8: //Display 4 Name
                             Inputs.Displays[3].OutputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 9: //Display 4 Source Name
                             Inputs.Displays[3].InputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 10: //Camera 1 Name
                             Inputs.Cameras[0].OutputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 11: //Camera 2 Name
                             Inputs.Cameras[1].OutputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         case 12: //Camera 3 Name
                             Inputs.Cameras[2].OutputName = args.Sig.StringValue;
-                            UpdateInputs();
-                            break;
+                            goto default;
                         default:
+                            UpdateInputs();
                             break;
                     }
                     #endregion
@@ -424,10 +432,14 @@ namespace RoomListv2
             if (args.DeviceOnLine)
             {
                 Enabled = true;
+                AvailabilityNeedsUpdate(true);
+                CrestronConsole.PrintLine("Room: {0} EISC online", Name);
+                SetOnline(true);
                 StartUpdateInputTimer();
             }
             else
             {
+                CrestronConsole.PrintLine("Room: {0} EISC offline", Name);
                 Enabled = false;
                 AvailableForReceiving = false;
                 AvailableForSending = false;
@@ -461,6 +473,7 @@ namespace RoomListv2
         #region Event Driven Functions
         public void RecievedUpdateListItem(uint listNumber, uint id, string name, bool availableForSending, bool availableForReceiving, bool enabled)
         {
+            //CrestronConsole.PrintLine("Room: {0} Received Update Item from {1}: Available for Sending: {2}, Available for Receiving{3}, is Enabled, {4}", Name, id, availableForSending, availableForReceiving, enabled);
             foreach (RoomListItem listItem in roomList[(int)listNumber - 1])
             {
                 if (listItem.ID == id)
@@ -487,7 +500,9 @@ namespace RoomListv2
         }
         public void RecievedRequestFromReceivingRoom(uint id)
         {
-                foreach(List<RoomListItem> list in roomList)
+            if (Enabled)
+            {
+                foreach (List<RoomListItem> list in roomList)
                     foreach (RoomListItem item in list)
                     {
                         if (item.ID == id)
@@ -499,46 +514,54 @@ namespace RoomListv2
                             StartUpdateInputTimer();
                             break;
                         }
-                        
+
                     }
-                
+
                 if (availabilityEvent != null)
                 {
                     requestConnectionEvent(this, new RequestConnectionEventArgs { receiving = true, roomID = id, inputValues = Inputs });
                 }
-                
+            }      
         }
         public void ReceivedReplyFromSendingRoom(uint id, RoomInputValues inputs, string roomName)
         {
-            processInputs(inputs, id, roomName);
-            foreach (List<RoomListItem> list in roomList)
-                foreach (RoomListItem item in list)
-                {
-                    if (item.ID == id)
+            if (Enabled)
+            {
+                
+                foreach (List<RoomListItem> list in roomList)
+                    foreach (RoomListItem item in list)
                     {
-                        item.SelectedForSending = true;
-                        StartOneshotThread();
-                        StartUpdateInputTimer();
-                        break;
+                        if (item.ID == id)
+                        {
+                            CrestronConsole.PrintLine("Room: {0} Recieved Reply from Sending Room", Name);
+                            //processInputs(inputs, id, roomName);
+                            item.SelectedForSending = true;
+                            StartOneshotThread();
+                            StartUpdateInputTimer();
+                            break;
+                        }
                     }
-                }
+            }
         }
         public void RecievedRequestFromSenderToRemove(uint roomID)
         {
-            foreach (List<RoomListItem> list in roomList)
+            if(Enabled)
             {
-                foreach (RoomListItem item in list)
+                foreach (List<RoomListItem> list in roomList)
                 {
-                    if (roomID == item.ID)
+                    foreach (RoomListItem item in list)
                     {
-                        if (item.SelectedForSending)
+                        if (roomID == item.ID)
                         {
-                            item.SelectedForSending = false;
-                            _eisc.BooleanInput[81].BoolValue = true;
-                            AvailabilityNeedsUpdate(true);
-                            StartUpdateInputTimer();
+                            if (item.SelectedForSending)
+                            {
+                                item.SelectedForSending = false;
+                                _eisc.BooleanInput[81].BoolValue = true;
+                                AvailabilityNeedsUpdate(true);
+                                StartUpdateInputTimer();
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
@@ -546,31 +569,38 @@ namespace RoomListv2
         }
         public void RecievedRequestFromReceiverToRemove(uint roomID)
         {
-            foreach (List<RoomListItem> list in roomList)
+            if (Enabled)
             {
-                foreach (RoomListItem item in list)
+                foreach (List<RoomListItem> list in roomList)
                 {
-                    if (roomID == item.ID)
+                    foreach (RoomListItem item in list)
                     {
-                        item.SelectedForReceiving = false;
-                        AvailabilityNeedsUpdate(true);
-                        StartUpdateInputTimer();
-                        break;
+                        if (roomID == item.ID)
+                        {
+                            item.SelectedForReceiving = false;
+                            AvailabilityNeedsUpdate(true);
+                            StartUpdateInputTimer();
+                            break;
+                        }
                     }
                 }
             }
         }
         public void RecievedUpdateInput(uint roomID, RoomInputValues inputs)
         {
-            foreach (List<RoomListItem> list in roomList)
+            if (Enabled)
             {
-                foreach (RoomListItem item in list)
+                foreach (List<RoomListItem> list in roomList)
                 {
-                    if (roomID == item.ID && item.SelectedForSending)
+                    foreach (RoomListItem item in list)
                     {
-                        processInputs(inputs, roomID, item.Name);
-                    }
+                        if ((roomID == item.ID) && item.SelectedForSending)
+                        {
+                            CrestronConsole.PrintLine("Room: {0} Recieved Update Input", Name);   
+                            processInputs(inputs, roomID, item.Name);
+                        }
 
+                    }
                 }
             }
         }
@@ -579,31 +609,34 @@ namespace RoomListv2
         #region EISC Requests
         public void ClearReceivingRoomsButton(uint roomID)
         {
-            if (roomID == 0)
+            if(Enabled)
             {
-                processInputsAndClear();
-                foreach (List<RoomListItem> list in roomList)
+                if (roomID == 0)
                 {
-                    foreach (RoomListItem item in list)
+                    processInputsAndClear();
+                    foreach (List<RoomListItem> list in roomList)
                     {
-                        item.SelectedForReceiving = false;
-                    }
-                }
-            }
-            else
-            {
-                foreach (List<RoomListItem> list in roomList)
-                {
-                    foreach (RoomListItem item in list)
-                    {
-                        if (roomID == item.ID)
+                        foreach (RoomListItem item in list)
                         {
-                            processInputsAndClear();
                             item.SelectedForReceiving = false;
-                            break;
                         }
                     }
-                } 
+                }
+                else
+                {
+                    foreach (List<RoomListItem> list in roomList)
+                    {
+                        foreach (RoomListItem item in list)
+                        {
+                            if (roomID == item.ID)
+                            {
+                                processInputsAndClear();
+                                item.SelectedForReceiving = false;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
             StartUpdateInputTimer();
             if (requestConnectionEvent != null)
@@ -613,112 +646,132 @@ namespace RoomListv2
         }
         public void ClearSendingRoomsButton(uint roomID)
         {
-            if (roomID == 0)
+            if (Enabled)
             {
-                Inputs.Reset();
-                foreach (List<RoomListItem> list in roomList)
+                if (roomID == 0)
                 {
-                    foreach (RoomListItem item in list)
+                    //Inputs.Reset();
+                    foreach (List<RoomListItem> list in roomList)
                     {
-                        if (item.SelectedForSending)
+                        foreach (RoomListItem item in list)
                         {
-                            item.SelectedForSending = false;
-                            if (requestConnectionEvent != null)
+                            if (item.SelectedForSending)
                             {
-                                requestConnectionEvent(this, new RequestConnectionEventArgs { sending = true, clear = true, roomID = item.ID });
+                                item.SelectedForSending = false;
+                                if (requestConnectionEvent != null)
+                                {
+                                    requestConnectionEvent(this, new RequestConnectionEventArgs { sending = true, clear = true, roomID = item.ID });
+                                }
+                            }
+                        }
+                    }
+                    StartUpdateInputTimer();
+                }
+                else
+                {
+                    foreach (List<RoomListItem> list in roomList)
+                    {
+                        foreach (RoomListItem item in list)
+                        {
+                            if (roomID == item.ID)
+                            {
+                                //Inputs.Reset();
+                                item.SelectedForSending = false;
+                                StartUpdateInputTimer();
+                                if (requestConnectionEvent != null)
+                                {
+                                    requestConnectionEvent(this, new RequestConnectionEventArgs { sending = true, clear = true, roomID = roomID });
+                                }
+                                break;
                             }
                         }
                     }
                 }
-                StartUpdateInputTimer();
             }
-            else
-            {
-                foreach (List<RoomListItem> list in roomList)
-                {
-                    foreach (RoomListItem item in list)
-                    {
-                        if (roomID == item.ID)
-                        {
-                            Inputs.Reset();
-                            item.SelectedForSending = false;
-                            StartUpdateInputTimer();
-                            if (requestConnectionEvent != null)
-                            {
-                                requestConnectionEvent(this, new RequestConnectionEventArgs { sending = true, clear = true, roomID = roomID });
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-
-
         }
         public void ReceiveRoomButton(uint list, uint item)
         {
-            uint id = outputRoomList[(int)list - 1][(int)item - 1].ID;
-            if (id != 0)
+            if (Enabled)
             {
-                ClearSendingRoomsButton(0);
-                foreach (List<RoomListItem> _list in roomList)
+                uint id = outputRoomList[(int)list - 1][(int)item - 1].ID;
+                if (id != 0)
                 {
-                    foreach (RoomListItem _item in _list)
+                    ClearSendingRoomsButton(0);
+                    foreach (List<RoomListItem> _list in roomList)
                     {
-                        if (id == _item.ID)
+                        foreach (RoomListItem _item in _list)
                         {
-                            _item.SelectedForSending = true;
+                            if (id == _item.ID)
+                            {
+                                _item.SelectedForSending = true;
+                            }
                         }
                     }
-                }
 
-                if (requestConnectionEvent != null)
-                {
-                    requestConnectionEvent(this, new RequestConnectionEventArgs { requesting = true, roomID = id });
+                    if (requestConnectionEvent != null)
+                    {
+                        requestConnectionEvent(this, new RequestConnectionEventArgs { requesting = true, roomID = id });
+                    }
+                    StartUpdateInputTimer();
                 }
-                StartUpdateInputTimer();
             }
         }
         public void SendRoomButton(uint list, uint item)
         {
-            uint id = outputRoomList[(int)list - 1][(int)item - 1].ID;
-            if (id != 0)
+            if (Enabled)
             {
-                foreach (List<RoomListItem> _list in roomList)
+                uint id = outputRoomList[(int)list - 1][(int)item - 1].ID;
+                if (id != 0)
                 {
-                    foreach (RoomListItem _item in _list)
+                    foreach (List<RoomListItem> _list in roomList)
                     {
-                        if (id == _item.ID)
+                        foreach (RoomListItem _item in _list)
                         {
-                            _item.SelectedForReceiving = true;
+                            if (id == _item.ID)
+                            {
+                                _item.SelectedForReceiving = true;
+                            }
                         }
                     }
-                }
 
-                if (requestConnectionEvent != null)
-                {
-                    requestConnectionEvent(this, new RequestConnectionEventArgs { sending = true, roomID = id, inputValues = Inputs });
+                    if (requestConnectionEvent != null)
+                    {
+                        requestConnectionEvent(this, new RequestConnectionEventArgs { sending = true, roomID = id, inputValues = Inputs });
+                    }
+                    StartUpdateInputTimer();
                 }
-                StartUpdateInputTimer();
             }
         }
         public void setOverflow(bool state)
         {
-            OverflowEnabled = state;
-            AvailabilityNeedsUpdate(true);
-            StartUpdateInputTimer();
+            if (Enabled)
+            {
+                OverflowEnabled = state;
+                if (!OverflowEnabled)
+                    ClearReceivingRoomsButton(0);
+                CrestronConsole.PrintLine("Overflow just enabled: {0}", OverflowEnabled);
+                AvailabilityNeedsUpdate(true);
+                StartUpdateInputTimer();
+            }
         }
         public void setRoomState(bool state)
         {
-            RoomState = state;
-            AvailabilityNeedsUpdate(true);
-            StartUpdateInputTimer();
+            //CrestronConsole.PrintLine("Room ID: {0} Roomstate is about to be set to: {1}, Enabled: {2}", ID, state, Enabled);
+            if(Enabled)
+            {
+                RoomState = state;
+                //CrestronConsole.PrintLine("Room ID: {0} Roomstate just set: {1}, from state: {0}", ID, RoomState, state);
+                AvailabilityNeedsUpdate(true);
+                StartUpdateInputTimer();
+            }
         }
         public void setReceivingSelected(bool state)
         {
-            ReceivingSelected = state;
-            StartUpdateInputTimer();
-
+            if (Enabled)
+            {
+                ReceivingSelected = state;
+                StartUpdateInputTimer();
+            }
         }
 
         /// <summary>
@@ -727,6 +780,7 @@ namespace RoomListv2
         /// <param name="_name">Name of the New Room Name</param>
         public void SetRoomName(string _name)
         {
+            CrestronConsole.PrintLine("Room ID: {0} Updating Room Name: {1}", ID, _name);
             Name = _name;
             if (updateEvent != null)
                 updateEvent(this, new UpdateEventArgs { name = _name });
@@ -786,12 +840,11 @@ namespace RoomListv2
         }
         public void UpdateInputs()
         {
-            CrestronConsole.PrintLine("Update Inputs Called Room: {0}", ID);
+            //CrestronConsole.PrintLine("Update Inputs Called Room: {0}", ID);
             if (updateEvent != null)
                 updateEvent(this, new UpdateEventArgs { inputs = Inputs });
         }
         private void ProcessRoom(object o)
-
         {
             if (Enabled)
             {
@@ -845,42 +898,54 @@ namespace RoomListv2
                 UpdateInputs();
                 makeSendingRoomList();
                 UpdateOutputList();
-                UpdateEISCSignals();
+                StartUpdateEISCTimer();
             }
+        }
+        private void ProcessEISC(object o)
+        {
+            CrestronConsole.PrintLine("Room: {0} Process EISC Called", Name);
+            UpdateEISCSignals();
         }
         public void processInputs(RoomInputValues inputValues, uint roomID, string roomName)
         {
-            
+            CrestronConsole.PrintLine("Room: {0} Process Inputs Called", Name);
             ReveivingRoomName = roomName;
             if (SwitcherDictionary[roomID] == SwitcherDictionary[ID] || true)
             {
-                CrestronConsole.PrintLine("Process Inputs Called inside same switcher");
+                //CrestronConsole.PrintLine("Process Inputs Called inside same switcher");
                 ReceivingInputValues = inputValues;
-                CrestronConsole.PrintLine("Display Availability: {0}", inputValues.Displays[0].enabled);
-                UpdateEISCSignals();
+                //CrestronConsole.PrintLine("Display Availability: {0}", inputValues.Displays[0].enabled);
+                StartUpdateEISCTimer();
             }
 
 
         }
         public void processInputsAndClear()
         {
-            CrestronConsole.PrintLine("Process Inputs and Clear Called Room: {0}", ID);
+            //CrestronConsole.PrintLine("Process Inputs and Clear Called Room: {0}", ID);
             ReceivingInputValues.Reset();
             ReveivingRoomName = String.Empty;
-            UpdateEISCSignals();
+            StartUpdateEISCTimer();
         }
-        public void UpdateEISCSignals()
+        private void UpdateEISCSignals()
         {
-            //CrestronConsole.PrintLine("Start Updating EISCs");
+            //CrestronConsole.PrintLine("Room: {0} Updating EISC", Name);
             #region UpdateBools
             //Displays and Cameras
+            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 2: {1}", Name, ReceivingInputValues.Displays[0].enabled);
             _eisc.BooleanInput[2].BoolValue = ReceivingInputValues.Displays[0].enabled;
+            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 4: {1}", Name, ReceivingInputValues.Displays[1].enabled);
             _eisc.BooleanInput[4].BoolValue = ReceivingInputValues.Displays[1].enabled;
+            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 6: {1}", Name, ReceivingInputValues.Displays[2].enabled);
             _eisc.BooleanInput[6].BoolValue = ReceivingInputValues.Displays[2].enabled;
+            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 8: {1}", Name, ReceivingInputValues.Displays[3].enabled);
             _eisc.BooleanInput[8].BoolValue = ReceivingInputValues.Displays[3].enabled;
+            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 10: {1}", Name, ReceivingInputValues.Cameras[0].enabled);
             _eisc.BooleanInput[10].BoolValue = ReceivingInputValues.Cameras[0].enabled;
+            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 12: {1}", Name, ReceivingInputValues.Cameras[1].enabled);
             _eisc.BooleanInput[12].BoolValue = ReceivingInputValues.Cameras[1].enabled;
-            _eisc.BooleanInput[14].BoolValue = ReceivingInputValues.Cameras[1].enabled;
+            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 14: {1}", Name, ReceivingInputValues.Cameras[2].enabled);
+            _eisc.BooleanInput[14].BoolValue = ReceivingInputValues.Cameras[2].enabled;
 
             //_eisc.BooleanInput[81].BoolValue; //Send to System to Notify to Shutdown if Sending Room Drops Send Used in this Function:RecievedRequestFromSenderToRemove() and ProcessUpdate()
             //_eisc.BooleanInput[82].BoolValue; //Send to System to Notify to Show Sending Page if Receiving Room selects(Dont Think we need this)
@@ -1033,17 +1098,24 @@ namespace RoomListv2
             #region Update Strings
 
             _eisc.StringInput[1].StringValue = ReveivingRoomName;
+            //CrestronConsole.PrintLine("Room: {0} Updating Serial Sig 2: {1}", Name, ReceivingInputValues.Displays[0].OutputName);
             _eisc.StringInput[2].StringValue = ReceivingInputValues.Displays[0].OutputName;
             _eisc.StringInput[3].StringValue = ReceivingInputValues.Displays[0].InputName;
+            //CrestronConsole.PrintLine("Room: {0} Updating Serial Sig 4: {1}", Name, ReceivingInputValues.Displays[1].OutputName);
             _eisc.StringInput[4].StringValue = ReceivingInputValues.Displays[1].OutputName;
             _eisc.StringInput[5].StringValue = ReceivingInputValues.Displays[1].InputName;
+            //CrestronConsole.PrintLine("Room: {0} Updating Serial Sig 6: {1}", Name, ReceivingInputValues.Displays[2].OutputName);
             _eisc.StringInput[6].StringValue = ReceivingInputValues.Displays[2].OutputName;
             _eisc.StringInput[7].StringValue = ReceivingInputValues.Displays[2].InputName;
+            //CrestronConsole.PrintLine("Room: {0} Updating Serial Sig 8: {1}", Name, ReceivingInputValues.Displays[3].OutputName);
             _eisc.StringInput[8].StringValue = ReceivingInputValues.Displays[3].OutputName;
             _eisc.StringInput[9].StringValue = ReceivingInputValues.Displays[3].InputName;
+            //CrestronConsole.PrintLine("Room: {0} Updating Serial Sig 10: {1}", Name, ReceivingInputValues.Cameras[0].OutputName);
             _eisc.StringInput[10].StringValue = ReceivingInputValues.Cameras[0].OutputName;
-            _eisc.StringInput[11].StringValue = ReceivingInputValues.Cameras[2].OutputName;
-            _eisc.StringInput[12].StringValue = ReceivingInputValues.Cameras[3].OutputName;
+            //CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 11: {1}", Name, ReceivingInputValues.Cameras[1].OutputName);
+            _eisc.StringInput[11].StringValue = ReceivingInputValues.Cameras[1].OutputName;
+            //CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 112: {1}", Name, ReceivingInputValues.Cameras[2].OutputName);
+            _eisc.StringInput[12].StringValue = ReceivingInputValues.Cameras[2].OutputName;
             _eisc.StringInput[150].StringValue = ReceivingRoomList;
 
             x = 13;
@@ -1110,6 +1182,10 @@ namespace RoomListv2
         {
             _availabilityNeedsUpdate = state;
         }
+        public void SetOnline(bool state)
+        {
+            _eisc.BooleanInput[1].BoolValue = state;
+        }
         #endregion
 
         #region Print Functions
@@ -1161,6 +1237,33 @@ namespace RoomListv2
                                          FormatRoomName(roomList[3], i), FormatRoomReceiving(roomList[3], i), FormatRoomSending(roomList[3], i), FormatAvailRoomReceiving(roomList[3], i), FormatAvailRoomSending(roomList[3], i),
                                          FormatRoomName(roomList[4], i), FormatRoomReceiving(roomList[4], i), FormatRoomSending(roomList[4], i), FormatAvailRoomReceiving(roomList[4], i), FormatAvailRoomSending(roomList[4], i),
                                          FormatRoomName(roomList[5], i), FormatRoomReceiving(roomList[5], i), FormatRoomSending(roomList[5], i), FormatAvailRoomReceiving(roomList[5], i), FormatAvailRoomSending(roomList[5], i));
+            }
+        }
+        public void PrintRoomInputs()
+        {
+            foreach (VideoSource input in Inputs.Displays)
+            {
+                CrestronConsole.PrintLine("Room Name: {0}, Display Name: {1}, Display Input: {2}, Display Enabled, {3}", Name, input.OutputName, input.InputName, input.enabled);
+            }
+            foreach (VideoSource input in Inputs.Cameras)
+            {
+                CrestronConsole.PrintLine("Room Name: {0}, Camera Name: {1}, Camera Enabled, {2}", Name, input.OutputName, input.enabled);
+            }
+        }
+        public void PrintRoomStatus()
+        {
+            CrestronConsole.PrintLine("Room Name: {0}, Avail for sending: {1}, Avail for receiving: {2}, Room State: {3}, Overflow On: {4}, Enabled: {5}", Name, AvailableForSending, AvailableForReceiving, RoomState, OverflowEnabled, Enabled);
+        }
+
+        public void PrintRoomReceivingInputs()
+        {
+            foreach (VideoSource input in ReceivingInputValues.Displays)
+            {
+                CrestronConsole.PrintLine("Room: {0} ,Display Name: {1}, Display Input: {2}, Display Enabled, {3}", Name, input.OutputName, input.InputName, input.enabled);
+            }
+            foreach (VideoSource input in ReceivingInputValues.Cameras)
+            {
+                CrestronConsole.PrintLine("Room: {0} ,Camera Name: {1}, Camera Enabled, {2}", Name, input.OutputName, input.enabled);
             }
         }
 
@@ -1258,7 +1361,12 @@ namespace RoomListv2
 
         void StartUpdateInputTimer()
         {
-            ProcessRoomTimer.Reset(100);
+            ProcessRoomTimer.Reset(200);
+        }
+
+        void StartUpdateEISCTimer()
+        {
+            ProcessEISCTimer.Reset(1000);
         }
         #endregion
     }

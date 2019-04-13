@@ -47,68 +47,15 @@ namespace RoomListv2
                 CrestronEnvironment.ProgramStatusEventHandler += new ProgramStatusEventHandler(ControlSystem_ControllerProgramEventHandler);
                 CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(ControlSystem_ControllerEthernetEventHandler);
 
-                #region EISC Creation
-                if (this.SupportsEthernet)
-                {
-                    EISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
-                    for (uint i = 0; i < 40; i++)
-                    {
-                        EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "127.0.0.2", this));
-                    }                   
-                }
-                #endregion
 
-
-                #region Room Class: Initialize roomListDictionary
-                //Creates the Dictionary that holds the roomID and what list that roomID should live
-                BuildRoomListDictionary(40);
-                BuildRoomSwitcherDictionary(40);
-                #endregion
-
-                #region Room Class Instantiate Rooms
-                rooms = new List<Room>();
-                for (uint i = 0; i < 40; i++)
-                {
-                    rooms.Add(new Room(i + 1, String.Format("Room {0}", i + 1), roomSwitcherDictionary, EISCs[(int)i]));
-                }
-                foreach (Room room in rooms)
-                    room.setRoomState(false);
-
-
-                foreach (Room room in rooms)
-                {
-                    for (int i = 0; i < rooms.Count; i++)
-                        room.AddRoomToList(rooms[i].ID, rooms[i].Name, rooms[i].Enabled, roomListDictionary[rooms[i].ID]);
-                }
-                #endregion
-
-                #region Room Class Attach Event Handlers to Rooms
-                foreach (Room room in rooms)
-                {
-                    room.availabilityEvent += new Room.AvailabilityEvent(room_availabilityEvent);
-                    room.updateEvent += new Room.UpdateEvent(room_updateEvent);
-                    room.requestConnectionEvent += new Room.RequestConnectionEvent(room_requestConnectionEvent);
-                }
-                #endregion
-
-                #region EISC Register
-                if (this.SupportsEthernet)
-                {
-                    foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in EISCs)
-                    {
-                        if (eisc.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
-                        {
-                            ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
-                        }
-                        eisc.OnlineStatusChange += new OnlineStatusChangeEventHandler(EISC_OnlineStatusChange);
-                    } 
-                }
-                #endregion
 
                 CrestronConsole.AddNewConsoleCommand(PrintReceivingOutputList, "PrintROutputList", "This will Print the Receiving Output List", ConsoleAccessLevelEnum.AccessOperator);
                 CrestronConsole.AddNewConsoleCommand(PrintSendingOutputList, "PrintSOutputList", "This will Print the Sending Output List", ConsoleAccessLevelEnum.AccessOperator);
                 CrestronConsole.AddNewConsoleCommand(UpdateOutputList, "UpdateOutputList", "This will Update the Output List", ConsoleAccessLevelEnum.AccessOperator);
                 CrestronConsole.AddNewConsoleCommand(PrintRoomList, "PrintRoomList", "This will print the List", ConsoleAccessLevelEnum.AccessOperator);
+                CrestronConsole.AddNewConsoleCommand(PrintRoomOutputs, "PrintRoomOutputs", "This will print the Outputs", ConsoleAccessLevelEnum.AccessOperator);
+                CrestronConsole.AddNewConsoleCommand(PrintReceivingInputs, "PrintReceivingInputs", "This will print the Outputs", ConsoleAccessLevelEnum.AccessOperator);
+                CrestronConsole.AddNewConsoleCommand(PrintRoomStatus, "PrintRoomStatus", "Prints the rooms status", ConsoleAccessLevelEnum.AccessOperator);
             }
             catch (Exception e)
             {
@@ -197,14 +144,7 @@ namespace RoomListv2
         #endregion
 
         #region EISC Event Handlers
-        void EISC_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
-               {
-                   if (args.DeviceOnLine == true)
-                   {
-                       var name = EISCs.Where(x => x.ID == currentDevice.ID).Select(x => x.Name).ToList();
-                       CrestronConsole.PrintLine("EISC Named: {0} ID: Online", name[0], currentDevice.ID);
-                   }
-               }
+
         #endregion
 
         /// <summary>
@@ -224,6 +164,59 @@ namespace RoomListv2
         {
             try
             {
+                #region Room Class: Initialize roomListDictionary
+                //Creates the Dictionary that holds the roomID and what list that roomID should live
+                BuildRoomListDictionary(40);
+                BuildRoomSwitcherDictionary(40);
+                #endregion
+
+                #region EISC Creation
+                if (this.SupportsEthernet)
+                {
+                    EISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
+                    for (uint i = 0; i < 10; i++)
+                    {
+                        EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "127.0.0.2", this));
+                    }
+                }
+                #endregion
+
+                #region Room Class Instantiate Rooms
+                rooms = new List<Room>();
+
+                for (uint i = 0; i < 10; i++)
+                {
+                    rooms.Add(new Room(i + 1, String.Format("Room {0}", i + 1), roomSwitcherDictionary, EISCs[(int)i]));
+                }
+
+                foreach (Room room in rooms)
+                {
+                    for (int i = 0; i < rooms.Count; i++)
+                        room.AddRoomToList(rooms[i].ID, rooms[i].Name, rooms[i].Enabled, roomListDictionary[rooms[i].ID]);
+                }
+                #endregion
+
+                #region Room Class Attach Event Handlers to Rooms
+                foreach (Room room in rooms)
+                {
+                    room.availabilityEvent += new Room.AvailabilityEvent(room_availabilityEvent);
+                    room.updateEvent += new Room.UpdateEvent(room_updateEvent);
+                    room.requestConnectionEvent += new Room.RequestConnectionEvent(room_requestConnectionEvent);
+                }
+                #endregion
+
+                #region EISC Register
+                if (this.SupportsEthernet)
+                {
+                    foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in EISCs)
+                    {
+                        if (eisc.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                        {
+                            ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
+                        }
+                    }
+                }
+                #endregion
 
             }
             catch (Exception e)
@@ -314,6 +307,14 @@ namespace RoomListv2
                     //The program has been resumed. Resume all the user threads/timers as needed.
                     break;
                 case (eProgramStatusEventType.Stopping):
+                    foreach (Room room in rooms)
+                    {
+                        room.SetOnline(false);
+                    }
+                    foreach(ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in EISCs)
+                    {
+                        eisc.UnRegister();
+                    }
                     //The program has been stopped.
                     //Close all threads. 
                     //Shutdown all Client/Servers in the system.
@@ -395,6 +396,35 @@ namespace RoomListv2
                 if (room.ID == int.Parse(param))
                 {
                     rooms[int.Parse(param) - 1].PrintRoomList();
+                    return;
+                }
+            }
+            CrestronConsole.PrintLine("Room Not Found");
+        }
+
+        void PrintRoomOutputs(string param)
+        {
+            for(int i = 0; i < rooms.Count(); i++)
+            {
+                rooms[i].PrintRoomInputs();
+            }
+        }
+
+        void PrintReceivingInputs(string param)
+        {
+            for(int i = 0; i < rooms.Count(); i++)
+            {
+                rooms[i].PrintRoomReceivingInputs();
+            }
+        }
+
+        void PrintRoomStatus(string param)
+        {
+            foreach (Room room in rooms)
+            {
+                if (room.ID == int.Parse(param))
+                {
+                    rooms[int.Parse(param) - 1].PrintRoomStatus();
                     return;
                 }
             }

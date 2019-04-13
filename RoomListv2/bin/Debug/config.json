@@ -1,0 +1,687 @@
+{
+    "Room_Name": "Room 427A",
+    "Welcome_Text": "Press Screen to Begin.",
+    "Shutdown_Text": "Are you sure you want to shut down the system?",
+    "Warming_Text": "Please wait while the system starts",
+    "Cooling_Text": "Please wait while the system shuts down",
+    "Startup_Time": 30,
+    "Shutdown_Time_Display_Active": 16,
+    "Shutdown_Time_Display_Inactive": 15,
+    "Microphone_Mute_Enable": 1,
+    "Microphone_Muted_Text": "Microphone Muted",
+    "Microphone_Muted_Not_Text": "Microphone Not Muted",
+    "Presentation_Page_Text": "Please select an item to the left",
+    "Displays": [
+        {
+            "Name": "Display",
+            "Type": "Display",
+            "Screen_Enabled": 1,
+            "Switcher_Value": 16,
+            "Icon_Value": 83,
+            "Warming_Time": 30,
+            "SSI_Display_Usage": {
+                "Display_Name": "Left Display"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "Left Display Offline",
+                "Ok_Text": "Left Display Ok"
+            }
+        }
+    ],
+    "DisplayArray": [
+        {
+            "Name": "Display",
+            "Type": "Display",
+            "Screen_Enabled": 1,
+            "Switcher_Value": 16,
+            "Icon_Value": 83,
+            "Warming_Time": 30,
+            "SSI_Display_Usage": {
+                "Display_Name": "Left Display"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "Left Display Offline",
+                "Ok_Text": "Left Display Ok"
+            }
+        }
+    ],
+    "Cameras": [
+        {
+            "Presets": [
+                {
+                    "Type": "Camera",
+                    "Id": "Room",
+                    "Name": "Preset 1"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "2",
+                    "Name": "Preset 2"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "3",
+                    "Name": "Preset 3"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "4",
+                    "Name": "Preset 4"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "5",
+                    "Name": "Preset 5"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "6",
+                    "Name": "Preset 6"
+                }
+            ],
+            "PresetsArray": [
+                {
+                    "Type": "Camera",
+                    "Id": "Room",
+                    "Name": "Preset 1"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "2",
+                    "Name": "Preset 2"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "3",
+                    "Name": "Preset 3"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "4",
+                    "Name": "Preset 4"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "5",
+                    "Name": "Preset 5"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "6",
+                    "Name": "Preset 6"
+                }
+            ],
+	    "Switcher_Value": 31,
+            "SSI_Device_Usage": {
+                "Device_Type": "Camera",
+                "Device_Name": "Front Camera"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "Front Camera Offline",
+                "Ok_Text": "Front Camera Online"
+            }
+        }
+    ],
+    "CameraArray": [
+        {
+            "Presets": [
+                {
+                    "Type": "Camera",
+                    "Id": "Room",
+                    "Name": "Preset 1"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "2",
+                    "Name": "Preset 2"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "3",
+                    "Name": "Preset 3"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "4",
+                    "Name": "Preset 4"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "5",
+                    "Name": "Preset 5"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "6",
+                    "Name": "Preset 6"
+                }
+            ],
+            "PresetsArray": [
+                {
+                    "Type": "Camera",
+                    "Id": "Room",
+                    "Name": "Preset 1"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "2",
+                    "Name": "Preset 2"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "3",
+                    "Name": "Preset 3"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "4",
+                    "Name": "Preset 4"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "5",
+                    "Name": "Preset 5"
+                },
+                {
+                    "Type": "Camera",
+                    "Id": "6",
+                    "Name": "Preset 6"
+                }
+            ],
+            "SSI_Device_Usage": {
+                "Device_Type": "Camera",
+                "Device_Name": "Front Camera"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "Front Camera Offline",
+                "Ok_Text": "Front Camera Online"
+            }
+        }
+    ],
+    "Presentation_Inputs": [
+        {
+            "Name": "HDMI",
+            "Type": "HDMI",
+            "Generic_Page_Text": "This input has no user controls",
+            "Switcher_Value": 30,
+            "Icon_Value": 40,
+            "SSI_Device_Usage": {
+                "Device_Type": "HDMI",
+                "Device_Name": "HDMI 1"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "2",
+                "Error_Text": "HDMI 1 Offline",
+                "Ok_Text": "HDMI Ok"
+            }
+        },
+        {
+            "Name": "Room PC",
+            "Type": "PC",
+            "Generic_Page_Text": "This input has no user controls",
+            "Switcher_Value": 59,
+            "Icon_Value": 40,
+            "SSI_Device_Usage": {
+                "Device_Type": "PC",
+                "Device_Name": "Room PC"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "Room PC Offline",
+                "Ok_Text": "Room PC Online"
+            }
+        },
+        {
+            "Name": "Air Media",
+            "Type": "PC",
+            "Generic_Page_Text": "This input has no user controls",
+            "Switcher_Value": 60,
+            "Icon_Value": 106,
+            "SSI_Device_Usage": {
+                "Device_Type": "BYOD",
+                "Device_Name": "Air Media"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "Air Media Offline",
+                "Ok_Text": "Air Media Online"
+            }
+        },
+        {
+            "Name": "No Source",
+            "Type": "None",
+            "Generic_Page_Text": "This input shows nothing on the display",
+            "Switcher_Value": 0,
+            "Icon_Value": 33,
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            }
+        }
+    ],
+    "PresentationInputArray": [
+        {
+            "Name": "HDMI",
+            "Type": "HDMI",
+            "Generic_Page_Text": "This input has no user controls",
+            "Switcher_Value": 30,
+            "Icon_Value": 40,
+            "SSI_Device_Usage": {
+                "Device_Type": "HDMI",
+                "Device_Name": "HDMI 1"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "2",
+                "Error_Text": "HDMI 1 Offline",
+                "Ok_Text": "HDMI Ok"
+            }
+        },
+        {
+            "Name": "Room PC",
+            "Type": "PC",
+            "Generic_Page_Text": "This input has no user controls",
+            "Switcher_Value": 59,
+            "Icon_Value": 40,
+            "SSI_Device_Usage": {
+                "Device_Type": "PC",
+                "Device_Name": "Room PC"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "Room PC Offline",
+                "Ok_Text": "Room PC Online"
+            }
+        },
+        {
+            "Name": "Air Media",
+            "Type": "PC",
+            "Generic_Page_Text": "This input has no user controls",
+            "Switcher_Value": 60,
+            "Icon_Value": 106,
+            "SSI_Device_Usage": {
+                "Device_Type": "BYOD",
+                "Device_Name": "Air Media"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "Air Media Offline",
+                "Ok_Text": "Air Media Online"
+            }
+        },
+        {
+            "Name": "No Source",
+            "Type": "None",
+            "Generic_Page_Text": "This input shows nothing on the display",
+            "Switcher_Value": 0,
+            "Icon_Value": 33,
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            },
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            }
+        }
+    ],
+    "ATC": {
+        "Extension": "x1-234",
+        "Help_Number": "1-800-555-5555",
+        "Help_Button_Text": "Press to Call Help",
+        "Connected_Dial_Text": "Connected",
+        "Disconnected_Dial_Text": "Dial",
+        "Connected_Hangup_Text": "Hangup",
+        "Disconnected_Hangup_Text": "Disconnected",
+        "SSI_Device_Usage": {
+            "Device_Type": "ATC Codec",
+            "Device_Name": "ATC Codec"
+        },
+        "SSI_Equipment_Status": {
+            "Severity_Message": "Error",
+            "Error_Text": "ATC Codec Offline",
+            "Ok_Text": "ATC Codec Offline"
+        }
+    },
+    "VTC": {
+        "Extension": "sip:vlan@imsts.com",
+        "Help_Number": "sip:help@imsts.com",
+        "Help_Button_Text": "Press to Call VTC Help",
+        "Connected_Dial_Text": "Connected",
+        "Disconnected_Dial_Text": "Dial",
+        "Connected_Hangup_Text": "Hangup",
+        "Disconnected_Hangup_Text": "Disconnected",
+        "SSI_Device_Usage": {
+            "Device_Type": "VTC Codec",
+            "Device_Name": "VTC Codec"
+        },
+        "SSI_Equipment_Status": {
+            "Severity_Message": "Error",
+            "Error_Text": "VTC Codec Offline",
+            "Ok_Text": "VTC Codec Offline"
+        }
+    },
+    "Lighting": {
+        "Presets": [
+            {
+                "Type": "Lighting",
+                "Id": "1",
+                "Name": "Preset 1"
+            },
+            {
+                "Type": "Lighting",
+                "Id": "2",
+                "Name": "Preset 2"
+            },
+            {
+                "Type": "Lighting",
+                "Id": "3",
+                "Name": "Preset 3"
+            },
+            {
+                "Type": "Lighting",
+                "Id": "4",
+                "Name": "Preset 4"
+            },
+            {
+                "Type": "Lighting",
+                "Id": "5",
+                "Name": "Preset 5"
+            },
+            {
+                "Type": "Lighting",
+                "Id": "6",
+                "Name": "Preset 6"
+            }
+        ],
+        "PresetsArray": null,
+        "SSI_Equipment_Status": {
+            "Severity_Message": "Error",
+            "Error_Text": "VTC Codec Offline",
+            "Ok_Text": "VTC Codec Offline"
+        }
+    },
+    "Power_Sequencer": [
+        {
+            "Channel_1_Name": "DSP",
+            "Channel_2_Name": "Crestron",
+            "Channel_3_Name": "Camera",
+            "Channel_4_Name": "Microphones",
+            "Channel_5_Name": "POE Injectors",
+            "Channel_6_Name": "DM Switch",
+            "Channel_7_Name": "Recorder",
+            "Channel_8_Name": "Extra",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "VTC Codec Offline",
+                "Ok_Text": "VTC Codec Offline"
+            }
+        }
+    ],
+    "PowerSequencerArray": null,
+    "Generic_Device": [
+        {
+            "Type": "Type",
+            "Name": "Name",
+            "ValueName1": "QSYS Core IP address",
+            "Value1": "172.16.122.11",
+            "ValueName2": "Program Audio Level Named Control",
+            "Value2": "427A.PROGRAM.VOLUME",
+            "ValueName3": "Program Audio Mute Named Control",
+            "Value3": "427A.PROGRAM.MUTE",
+            "ValueName4": "427A.PREPROGRAM.MUTE",
+            "Value4": "427A.OVERFLOW.INPUT",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "ATC Codec Offline",
+                "Ok_Text": "ATC Codec Offline"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "ATC Codec",
+                "Device_Name": "ATC Codec"
+            }
+        },
+        {
+            "Type": "Type",
+            "Name": "Name",
+            "ValueName1": "Microphone Mute Named Control",
+            "Value1": "427A.MICROPHONE.MUTE",
+            "ValueName2": "",
+            "Value2": "",
+            "ValueName3": "",
+            "Value3": "",
+            "ValueName4": "",
+            "Value4": "",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "ATC Codec Offline",
+                "Ok_Text": "ATC Codec Offline"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "ATC Codec",
+                "Device_Name": "ATC Codec"
+            }
+        },
+        {
+            "Type": "Camera",
+            "Name": "Camera Stream URLs",
+            "ValueName1": "Camera 1 URL",
+            "Value1": "rtsp://172.16.121.94/stream",
+            "ValueName2": "Camera 2 URL",
+            "Value2": "",
+            "ValueName3": "Value 3 Name",
+            "Value3": "Value 3",
+            "ValueName4": "Value 4 Name",
+            "Value4": "Value 4",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            }
+        },
+        {
+            "Type": "Display",
+            "Name": "Display Control Info",
+            "ValueName1": "Display 0 IP",
+            "Value1": "172.16.121.93",
+            "ValueName2": "Display 0 Driver File Name",
+            "Value2": "\\USER\\RAD\\drivers\\SamsungDmTcp.dll",
+            "ValueName3": "Display 1 IP",
+            "Value3": "",
+            "ValueName4": "Display 1 Driver File Name",
+            "Value4": "",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            }
+        },
+        {
+            "Type": "Display",
+            "Name": "Display Control Info",
+            "ValueName1": "Display 2 IP",
+            "Value1": "",
+            "ValueName2": "Display 2 Driver File Name",
+            "Value2": "",
+            "ValueName3": "Display 3 IP",
+            "Value3": "",
+            "ValueName4": "Display 3 Driver File Name",
+            "Value4": "",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            }
+        },
+        {
+            "Type": "Display Macs",
+            "Name": "Display Mac Info",
+            "ValueName1": "Display 0 MAC",
+            "Value1": "C0:48:E6:",
+            "ValueName2": "Display 1 MAC",
+            "Value2": "",
+            "ValueName3": "Display 2 MAC",
+            "Value3": "",
+            "ValueName4": "Display 3 MAC",
+            "Value4": "",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            }
+        }
+    ],
+    "GenericDeviceArray": [
+        {
+            "Type": "Type",
+            "Name": "Name",
+            "ValueName1": "QSYS Core IP address",
+            "Value1": "172.16.122.11",
+            "ValueName2": "Program Audio Level Named Control",
+            "Value2": "427A.PROGRAM.VOLUME",
+            "ValueName3": "Program Audio Mute Named Control",
+            "Value3": "427A.PROGRAM.MUTE",
+            "ValueName4": "Overflow ID Control",
+            "Value4": "427A.OVERFLOW.INPUT",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "ATC Codec Offline",
+                "Ok_Text": "ATC Codec Offline"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "ATC Codec",
+                "Device_Name": "ATC Codec"
+            }
+        },
+        {
+            "Type": "Type",
+            "Name": "Name",
+            "ValueName1": "Microphone Mute Named Control",
+            "Value1": "427A.MICROPHONE.MUTE",
+            "ValueName2": "",
+            "Value2": "",
+            "ValueName3": "",
+            "Value3": "",
+            "ValueName4": "",
+            "Value4": "",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "ATC Codec Offline",
+                "Ok_Text": "ATC Codec Offline"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "ATC Codec",
+                "Device_Name": "ATC Codec"
+            }
+        },
+        {
+            "Type": "Camera",
+            "Name": "Camera Stream URLs",
+            "ValueName1": "Camera 1 URL",
+            "Value1": "rtsp://172.16.121.94/stream",
+            "ValueName2": "Camera 2 URL",
+            "Value2": "",
+            "ValueName3": "Value 3 Name",
+            "Value3": "Value 3",
+            "ValueName4": "Value 4 Name",
+            "Value4": "Value 4",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            }
+        },
+        {
+            "Type": "Display",
+            "Name": "Display Control Info",
+            "ValueName1": "Display 0 IP",
+            "Value1": "172.16.121.93",
+            "ValueName2": "Display 0 Driver File Name",
+            "Value2": "\\USER\\RAD\\drivers\\SamsungDmTcp.dll",
+            "ValueName3": "Display 1 IP",
+            "Value3": "",
+            "ValueName4": "Display 1 Driver File Name",
+            "Value4": "",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            }
+        },
+        {
+            "Type": "Display",
+            "Name": "Display Control Info",
+            "ValueName1": "Display 2 IP",
+            "Value1": "",
+            "ValueName2": "Display 2 Driver File Name",
+            "Value2": "",
+            "ValueName3": "Display 3 IP",
+            "Value3": "",
+            "ValueName4": "Display 3 Driver File Name",
+            "Value4": "",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            }
+        },
+        {
+            "Type": "Display Macs",
+            "Name": "Display Mac Info",
+            "ValueName1": "Display 0 MAC",
+            "Value1": "C0:48:E6:",
+            "ValueName2": "Display 1 MAC",
+            "Value2": "",
+            "ValueName3": "Display 2 MAC",
+            "Value3": "",
+            "ValueName4": "Display 3 MAC",
+            "Value4": "",
+            "SSI_Equipment_Status": {
+                "Severity_Message": "Error",
+                "Error_Text": "New Device Offline",
+                "Ok_Text": "New Device Online"
+            },
+            "SSI_Device_Usage": {
+                "Device_Type": "Generic Input",
+                "Device_Name": "New Device"
+            }
+        }
+    ]
+}
