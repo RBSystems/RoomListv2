@@ -71,6 +71,8 @@ namespace RoomListv2
 
         public RoomInputValues Inputs { set; get; }             //Holds the values of its inputs for Audio, Inputs, Displays, and Cameras
         public RoomInputValues ReceivingInputValues { set; get; } //Holds the values of the current sending room
+
+        private SwitcherManager SwitcherManager { set; get; }
         #endregion
 
         #region Delegates and Events
@@ -84,13 +86,14 @@ namespace RoomListv2
         #endregion
 
         //Constructor
-        public Room(uint id, string name, Dictionary<uint, uint> switcherDictionary, ThreeSeriesTcpIpEthernetIntersystemCommunications eisc)
+        public Room(uint id, string name, Dictionary<uint, uint> switcherDictionary, ThreeSeriesTcpIpEthernetIntersystemCommunications eisc, SwitcherManager switcherManager)
         {
             //Sent Properties from Contructor parameters
             ID = id;
             Name = name;
             SwitcherDictionary = switcherDictionary;
             _eisc = eisc;
+            SwitcherManager = switcherManager;
 
             //Generate Lists that are needed
             roomList = new List<List<RoomListItem>>();

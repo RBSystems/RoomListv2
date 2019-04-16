@@ -77,6 +77,7 @@
     <Compile Include="Room.cs" />
     <Compile Include="RoomInputValues.cs" />
     <Compile Include="RoomListItem.cs" />
+    <Compile Include="SwitcherManager.cs" />
     <Compile Include="VideoSource.cs" />
     <None Include="Properties\ControlSystem.cfg" />
   </ItemGroup>

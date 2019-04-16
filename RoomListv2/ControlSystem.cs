@@ -16,9 +16,11 @@ namespace RoomListv2
 
         #region GlobalVariables
         private List<ThreeSeriesTcpIpEthernetIntersystemCommunications> EISCs;
+        private List<ThreeSeriesTcpIpEthernetIntersystemCommunications> SwitcherEISCs;
         private static List<Room> rooms;
         private static Dictionary<uint, uint> roomListDictionary;
         private static Dictionary<uint, uint> roomSwitcherDictionary;
+        private static SwitcherManager switcherManager;
         #endregion
 
         /// <summary>
@@ -46,8 +48,6 @@ namespace RoomListv2
                 CrestronEnvironment.SystemEventHandler += new SystemEventHandler(ControlSystem_ControllerSystemEventHandler);
                 CrestronEnvironment.ProgramStatusEventHandler += new ProgramStatusEventHandler(ControlSystem_ControllerProgramEventHandler);
                 CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(ControlSystem_ControllerEthernetEventHandler);
-
-
 
                 CrestronConsole.AddNewConsoleCommand(PrintReceivingOutputList, "PrintROutputList", "This will Print the Receiving Output List", ConsoleAccessLevelEnum.AccessOperator);
                 CrestronConsole.AddNewConsoleCommand(PrintSendingOutputList, "PrintSOutputList", "This will Print the Sending Output List", ConsoleAccessLevelEnum.AccessOperator);
@@ -174,19 +174,26 @@ namespace RoomListv2
                 if (this.SupportsEthernet)
                 {
                     EISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
+                    SwitcherEISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
                     for (uint i = 0; i < 10; i++)
                     {
                         EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "127.0.0.2", this));
                     }
+                    for (uint i = 0; i < 3; i++)
+                    {
+                        SwitcherEISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 240), "127.0.0.2", this));
+                    }
                 }
                 #endregion
+
+                switcherManager = new SwitcherManager(SwitcherEISCs);
 
                 #region Room Class Instantiate Rooms
                 rooms = new List<Room>();
 
                 for (uint i = 0; i < 10; i++)
                 {
-                    rooms.Add(new Room(i + 1, String.Format("Room {0}", i + 1), roomSwitcherDictionary, EISCs[(int)i]));
+                    rooms.Add(new Room(i + 1, String.Format("Room {0}", i + 1), roomSwitcherDictionary, EISCs[(int)i], switcherManager));
                 }
 
                 foreach (Room room in rooms)
