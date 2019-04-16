@@ -62,7 +62,111 @@ namespace RoomListv2
                 ErrorLog.Error("Error in the constructor: {0}", e.Message);
             }
         }
+        public override void InitializeSystem()
+        {
+            try
+            {
+                #region Room Class: Initialize roomListDictionary
+                //Creates the Dictionary that holds the roomID and what list that roomID should live
+                BuildRoomListDictionary(36);
+                BuildRoomSwitcherDictionary(36);
+                #endregion
 
+                #region EISC Creation
+                if (this.SupportsEthernet)
+                {
+                    EISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
+                    SwitcherEISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
+                    for (uint i = 0; i < 36; i++)
+                    {
+                        EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "127.0.0.2", this));
+                    }
+                    /*
+                    for (uint i = 0; i < 36; i++)
+                    {
+                        if (i < 2)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.202", this));
+                        else if (i < 7)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.44", this));
+                        else if (i < 14)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.45", this));
+                        else if (i < 19)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.46", this));
+                        else if (i < 24)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.115", this));
+                        else if (i < 30)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.116", this));
+                        else if (i < 36)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.117", this));
+
+                    }
+                    */
+                    for (uint i = 0; i < 3; i++)
+                    {
+                        SwitcherEISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 233), "127.0.0.2", this));
+                    }
+                }
+                #endregion
+                try
+                {
+                    switcherManager = new SwitcherManager(SwitcherEISCs);
+                }
+                catch (Exception e)
+                {
+                    ErrorLog.Error("SwitchManager Error, Error in InitializeSystem: {0}", e.Message);
+                }
+
+                #region Room Class Instantiate Rooms
+                rooms = new List<Room>();
+
+                for (uint i = 0; i < 36; i++)
+                {
+                    rooms.Add(new Room(i + 1, String.Format("Room {0}", i + 1), roomSwitcherDictionary, EISCs[(int)i], switcherManager));
+                }
+
+                foreach (Room room in rooms)
+                {
+                    for (int i = 0; i < rooms.Count; i++)
+                        room.AddRoomToList(rooms[i].ID, rooms[i].Name, rooms[i].Enabled, roomListDictionary[rooms[i].ID]);
+                }
+                #endregion
+
+                #region Room Class Attach Event Handlers to Rooms
+                foreach (Room room in rooms)
+                {
+                    room.availabilityEvent += new Room.AvailabilityEvent(room_availabilityEvent);
+                    room.updateEvent += new Room.UpdateEvent(room_updateEvent);
+                    room.requestConnectionEvent += new Room.RequestConnectionEvent(room_requestConnectionEvent);
+                }
+                #endregion
+
+                #region EISC Register
+                if (this.SupportsEthernet)
+                {
+                    foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in EISCs)
+                    {
+                        if (eisc.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                        {
+                            ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
+                        }
+                    }
+
+                    foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in SwitcherEISCs)
+                    {
+                        if (eisc.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                        {
+                            ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
+                        }
+                    }
+                }
+                #endregion
+
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
+            }
+        }
         #region Room Class: Event Handlers
         static void room_requestConnectionEvent(Room sender, RequestConnectionEventArgs e)
         {
@@ -160,108 +264,24 @@ namespace RoomListv2
         /// Please be aware that InitializeSystem needs to exit quickly also; 
         /// if it doesn't exit in time, the SIMPL#Pro program will exit.
         /// </summary>
-        public override void InitializeSystem()
-        {
-            try
-            {
-                #region Room Class: Initialize roomListDictionary
-                //Creates the Dictionary that holds the roomID and what list that roomID should live
-                BuildRoomListDictionary(40);
-                BuildRoomSwitcherDictionary(40);
-                #endregion
 
-                #region EISC Creation
-                if (this.SupportsEthernet)
-                {
-                    EISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
-                    SwitcherEISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
-                    for (uint i = 0; i < 10; i++)
-                    {
-                        EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "127.0.0.2", this));
-                    }
-                    for (uint i = 0; i < 3; i++)
-                    {
-                        SwitcherEISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 233), "127.0.0.2", this));
-                    }
-                }
-                #endregion
-                try
-                {
-                    switcherManager = new SwitcherManager(SwitcherEISCs);
-                }
-                catch(Exception e)
-                {
-                    ErrorLog.Error("SwitchManager Error, Error in InitializeSystem: {0}", e.Message);   
-                }
-
-                #region Room Class Instantiate Rooms
-                rooms = new List<Room>();
-
-                for (uint i = 0; i < 10; i++)
-                {
-                    rooms.Add(new Room(i + 1, String.Format("Room {0}", i + 1), roomSwitcherDictionary, EISCs[(int)i], switcherManager));
-                }
-
-                foreach (Room room in rooms)
-                {
-                    for (int i = 0; i < rooms.Count; i++)
-                        room.AddRoomToList(rooms[i].ID, rooms[i].Name, rooms[i].Enabled, roomListDictionary[rooms[i].ID]);
-                }
-                #endregion
-
-                #region Room Class Attach Event Handlers to Rooms
-                foreach (Room room in rooms)
-                {
-                    room.availabilityEvent += new Room.AvailabilityEvent(room_availabilityEvent);
-                    room.updateEvent += new Room.UpdateEvent(room_updateEvent);
-                    room.requestConnectionEvent += new Room.RequestConnectionEvent(room_requestConnectionEvent);
-                }
-                #endregion
-
-                #region EISC Register
-                if (this.SupportsEthernet)
-                {
-                    foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in EISCs)
-                    {
-                        if (eisc.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
-                        {
-                            ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
-                        }
-                    }
-
-                    foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in SwitcherEISCs)
-                    {
-                        if (eisc.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
-                        {
-                            ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
-                        }
-                    }
-                }
-                #endregion
-
-            }
-            catch (Exception e)
-            {
-                ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
-            }
-        }
 
         void BuildRoomListDictionary(uint numberOfRooms)
         {
             roomListDictionary = new Dictionary<uint, uint>();  //Create a new Dictionary to hold the list of rooms and their list number they belong in
             for (uint i = 1; i <= numberOfRooms; i++)
             {
-                if (i < 4)
+                if (i < 16)
                     roomListDictionary.Add(i, 1);
-                else if (i < 10)
+                else if (i < 18)
                     roomListDictionary.Add(i, 2);
-                else if (i < 20)
+                else if (i < 25)
                     roomListDictionary.Add(i, 3);
-                else if (i < 31)
+                else if (i < 29)
                     roomListDictionary.Add(i, 4);
-                else if (i < 38)
+                else if (i < 34)
                     roomListDictionary.Add(i, 5);
-                else if (i <= 40)
+                else if (i <= 36)
                     roomListDictionary.Add(i, 6);
             }
 
@@ -271,11 +291,11 @@ namespace RoomListv2
             roomSwitcherDictionary = new Dictionary<uint, uint>(); //Use this to pick which rooms go where
             for (uint i = 1; i <= numberOfRooms; i++)
             {
-                if (i < 4)
+                if (i < 3)
                     roomSwitcherDictionary.Add(i, 1);
-                else if (i < 31)
+                else if (i < 20)
                     roomSwitcherDictionary.Add(i, 2);
-                else if (i <= 40)
+                else if (i <= 36)
                     roomSwitcherDictionary.Add(i, 3);
             }
         }

@@ -558,6 +558,10 @@ namespace RoomListv2
                         {
                             if (item.SelectedForSending)
                             {
+                                if (SwitcherDictionary[ID] != SwitcherDictionary[roomID])
+                                {
+                                    SwitcherManager.ClearReceivingRoom(roomID, ID);
+                                }
                                 item.SelectedForSending = false;
                                 _eisc.BooleanInput[81].BoolValue = true;
                                 AvailabilityNeedsUpdate(true);
@@ -580,6 +584,10 @@ namespace RoomListv2
                     {
                         if (roomID == item.ID)
                         {
+                            if (SwitcherDictionary[ID] != SwitcherDictionary[roomID])
+                            {
+                                SwitcherManager.ClearReceivingRoom(ID, roomID);
+                            }
                             item.SelectedForReceiving = false;
                             AvailabilityNeedsUpdate(true);
                             StartUpdateInputTimer();
@@ -600,8 +608,6 @@ namespace RoomListv2
                         if ((roomID == item.ID) && item.SelectedForSending)
                         {
                             CrestronConsole.PrintLine("Room: {0} Recieved Update Input", Name);
-                            if(SwitcherDictionary[roomID] != SwitcherDictionary[ID])
-                                inputs = SwitcherManager.AttachSendingRoom(roomID, SwitcherDictionary[roomID], ID, SwitcherDictionary[ID], inputs); //Added for InterSwitcher Logic
                             processInputs(inputs, roomID, item.Name);
                         }
 
@@ -655,7 +661,6 @@ namespace RoomListv2
             {
                 if (roomID == 0)
                 {
-                    //Inputs.Reset();
                     foreach (List<RoomListItem> list in roomList)
                     {
                         foreach (RoomListItem item in list)
@@ -680,7 +685,6 @@ namespace RoomListv2
                         {
                             if (roomID == item.ID)
                             {
-                                //Inputs.Reset();
                                 item.SelectedForSending = false;
                                 StartUpdateInputTimer();
                                 if (requestConnectionEvent != null)
@@ -813,8 +817,17 @@ namespace RoomListv2
                     foreach (RoomListItem item in list)
                     {
                         if (item.AvailableForSending || item.SelectedForSending)
-                            if (SwitcherManager.RouteAvailable(SwitcherDictionary[item.ID], SwitcherDictionary[ID], item.ID)) //Added for InterSwitcher Logic
+                        {
+                            CrestronConsole.PrintLine("Room: {0} Checking if Available for Sending", Name);
+                            if(SwitcherDictionary[ID] == SwitcherDictionary[item.ID])
+                            {
                                 outputRoomList[i].Add(item);
+                            }
+                            else if (SwitcherManager.RouteAvailable(SwitcherDictionary[item.ID], SwitcherDictionary[ID], item.ID))//Added for InterSwitcher Logic
+                            {
+                                outputRoomList[i].Add(item);
+                            }    
+                        }
                     }
                     if (outputRoomList[i].Count() == 0)
                     {
@@ -832,8 +845,15 @@ namespace RoomListv2
                         foreach (RoomListItem item in list)
                         {
                             if (item.AvailableForReceiving || item.SelectedForReceiving)
-                                if (SwitcherManager.RouteAvailable(SwitcherDictionary[ID], SwitcherDictionary[item.ID], ID)) //Added for InterSwitcher Logic
-                                outputRoomList[i].Add(item);
+                            {
+                                CrestronConsole.PrintLine("Room: {0} Checking if Available for Receiving", Name);
+                                if(SwitcherDictionary[ID] == SwitcherDictionary[item.ID])
+                                {
+                                    outputRoomList[i].Add(item);
+                                }
+                                else if (SwitcherManager.RouteAvailable(SwitcherDictionary[ID], SwitcherDictionary[item.ID], ID)) //Added for InterSwitcher Logic
+                                    outputRoomList[i].Add(item);
+                            }
                         }
                         if (outputRoomList[i].Count() == 0)
                         {
@@ -911,17 +931,33 @@ namespace RoomListv2
         private void ProcessEISC(object o)
         {
             CrestronConsole.PrintLine("Room: {0} Process EISC Called", Name);
-            UpdateEISCSignals();
+            try
+            {
+                UpdateEISCSignals();
+            }
+            catch
+            {
+                ErrorLog.Error("Error in Room: {0} {1}", ID, Name);
+            }
         }
         public void processInputs(RoomInputValues inputValues, uint roomID, string roomName)
         {
-            CrestronConsole.PrintLine("Room: {0} Process Inputs Called", Name);
+            //CrestronConsole.PrintLine("Room: {0} Process Inputs Called", Name);
             ReveivingRoomName = roomName;
-            if (SwitcherDictionary[roomID] == SwitcherDictionary[ID] || true)
+            CrestronConsole.PrintLine("{0}", inputValues.ToString());
+            if (SwitcherDictionary[roomID] == SwitcherDictionary[ID])
             {
                 //CrestronConsole.PrintLine("Process Inputs Called inside same switcher");
                 ReceivingInputValues = inputValues;
                 //CrestronConsole.PrintLine("Display Availability: {0}", inputValues.Displays[0].enabled);
+                StartUpdateEISCTimer();
+            }
+            else
+            {
+                //CrestronConsole.PrintLine("Room: {0} Processessing Different Switcher Called", Name);
+                ReceivingInputValues = SwitcherManager.AttachSendingRoom(roomID, SwitcherDictionary[roomID], ID, SwitcherDictionary[ID], inputValues); //Added for InterSwitcher Logic
+                //CrestronConsole.PrintLine("Room: {0} Done Processessing Different Switcher", Name);
+                //CrestronConsole.PrintLine(ReceivingInputValues.ToString());
                 StartUpdateEISCTimer();
             }
 

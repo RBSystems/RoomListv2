@@ -33,12 +33,14 @@ namespace RoomListv2
 
         public RoomInputValues AddSlot(uint sendingRoomID, uint receivingRoomID, RoomInputValues inputValues)
         {
+            RoomInputValues _inputValues;
             foreach(SwitcherSlot slot in SendingSlots)
                 if (slot.Available || slot.SendingRoomID == sendingRoomID)
                 {
-                    inputValues = slot.AddSlot(sendingRoomID, receivingRoomID, inputValues);
+                    CrestronConsole.PrintLine("Slot available or room is already sending");
+                    _inputValues = new RoomInputValues(slot.AddSlot(sendingRoomID, receivingRoomID, inputValues));
                     UpdateOutputs();
-                    return inputValues;
+                    return _inputValues;
                 }
             CrestronConsole.PrintLine("Error!!! No Room attached in Switcher AddSlot");
             return new RoomInputValues();
@@ -46,9 +48,10 @@ namespace RoomListv2
 
         public RoomInputValues AddSlot(uint sendingRoomID, uint receivingRoomID, RoomInputValues inputValues, uint slotNumber)
         {
-            inputValues = SendingSlots[(int)slotNumber].AddSlot(sendingRoomID, receivingRoomID, inputValues);
+            RoomInputValues _inputValues;
+            _inputValues = new RoomInputValues(SendingSlots[(int)slotNumber].AddSlot(sendingRoomID, receivingRoomID, inputValues));
             UpdateOutputs();
-            return inputValues;
+            return _inputValues;
 
         }
 

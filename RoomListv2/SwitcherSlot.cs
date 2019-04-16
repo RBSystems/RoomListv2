@@ -22,7 +22,7 @@ namespace RoomListv2
             Outputs = new List<uint>();
             Inputs = new List<uint>();
             Available = true;
-
+            RouteValues = new RoomInputValues();
             for (uint i = 0; i < 4; i++)
             {
                 Outputs.Add((startingOutput + i));
@@ -32,8 +32,11 @@ namespace RoomListv2
 
         public RoomInputValues AddSlot(uint sendingRoomID, uint receivingRoomID, RoomInputValues inputValues)
         {
+            //CrestronConsole.PrintLine("Adding Sending Room {0} an Receiving Room {1} to slot", sendingRoomID, receivingRoomID);
             SendingRoomID = sendingRoomID;
-            RouteValues = inputValues;
+            RouteValues = new RoomInputValues(inputValues);
+            RoomInputValues _inputValues;
+            _inputValues = new RoomInputValues(inputValues);
             bool IDFound = false;
             foreach (uint RoomID in ReceivingRoomIDs)
             {
@@ -48,40 +51,43 @@ namespace RoomListv2
             }
             Available = false;
             
-            inputValues.Displays[0].InputValue = Inputs[0];
-            inputValues.Displays[1].InputValue = Inputs[1];
-            inputValues.Displays[2].enabled = false;
-            inputValues.Displays[3].enabled = false;
-            inputValues.Cameras[0].InputValue = Inputs[2];
-            inputValues.Cameras[1].InputValue = Inputs[3];
-            inputValues.Cameras[1].enabled = false;
-            return inputValues;
+            _inputValues.Displays[0].InputValue = Inputs[0];
+            _inputValues.Displays[1].InputValue = Inputs[1];
+            _inputValues.Displays[2].enabled = false;
+            _inputValues.Displays[3].enabled = false;
+            _inputValues.Cameras[0].InputValue = Inputs[2];
+            _inputValues.Cameras[1].InputValue = Inputs[3];
+            _inputValues.Cameras[1].enabled = false;
+            CrestronConsole.Print("Sending Room ID: {0} || ", SendingRoomID);
+            foreach(uint receivingRoom in ReceivingRoomIDs)
+            {
+                CrestronConsole.Print("Receiving Room ID: {0} || ", receivingRoom);
+            }
+            CrestronConsole.PrintLine("=================");
+            return _inputValues;
         }
 
         public bool RemoveSlot(uint sendingRoomID, uint receivingRoomID)
         {
-            bool IDFound = false;
-            uint i = 0;
-            foreach (uint RoomID in ReceivingRoomIDs)
+            if (ReceivingRoomIDs.Contains(receivingRoomID))
             {
-                if (receivingRoomID == RoomID)
-                {
-                    IDFound = true;
-                    break;
-                }
-                i++;
-            }
-            if (IDFound)
-            {
-                ReceivingRoomIDs.Remove(i);
+                ReceivingRoomIDs.Remove(receivingRoomID);
+                CrestronConsole.PrintLine("Removing Receiving Room ID: {0}", receivingRoomID);
             }
             if (ReceivingRoomIDs.Count == 0)
             {
                 SendingRoomID = 0;
+                CrestronConsole.PrintLine("Setting Slot to Available!");
                 Available = true;
                 RouteValues.Reset();
                 return true;
             }
+            CrestronConsole.Print("Sending Room ID: {0} || ", SendingRoomID);
+            foreach (uint receivingRoom in ReceivingRoomIDs)
+            {
+                CrestronConsole.Print("Receiving Room ID: {0} || ", receivingRoom);
+            }
+            CrestronConsole.PrintLine("=================");
             return false;
         }
     }

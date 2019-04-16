@@ -23,6 +23,15 @@ namespace RoomListv2
                 enabled = false;
 	        }
 
+            public VideoSource(VideoSource obj)
+            {
+                IconValue = obj.IconValue;
+                InputValue = obj.InputValue;
+                OutputName = obj.OutputName;
+                InputName = obj.InputName;
+                enabled = obj.enabled;
+            }
+
             public void reset()
             {
                 IconValue = 0;
@@ -30,6 +39,11 @@ namespace RoomListv2
                 InputName = "No Name";
                 OutputName = "N/A";
                 enabled = false;
+            }
+
+            public override string ToString()
+            {
+                return String.Format("Input Name: {0} || InputValue {1} || OutputName: {2} ||  IconValue: {3} || Enabled: {4}", InputName, InputValue, OutputName, IconValue, enabled);
             }
 
     }
