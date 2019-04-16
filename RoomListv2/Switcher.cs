@@ -20,11 +20,11 @@ namespace RoomListv2
             EISC = _eisc;
         }
 
-        public bool PathAvailable()
+        public bool PathAvailable(uint sendingRoomId)
         {
             foreach (SwitcherSlot slot in SendingSlots)
             {
-                if (slot.Available)
+                if (slot.Available || slot.SendingRoomID == sendingRoomId)
                     return true;
             }
             return false;
@@ -33,14 +33,14 @@ namespace RoomListv2
         public RoomInputValues AddSlot(uint sendingRoomID, uint receivingRoomID, RoomInputValues inputValues)
         {
             foreach(SwitcherSlot slot in SendingSlots)
-                if (slot.Available)
+                if (slot.Available || slot.SendingRoomID == sendingRoomID)
                 {
-
                     inputValues = slot.AddSlot(sendingRoomID, receivingRoomID, inputValues);
                     UpdateOutputs();
                     return inputValues;
                 }
-            return null;
+            CrestronConsole.PrintLine("Error!!! No Room attached in Switcher AddSlot");
+            return new RoomInputValues();
         }
 
         public RoomInputValues AddSlot(uint sendingRoomID, uint receivingRoomID, RoomInputValues inputValues, uint slotNumber)

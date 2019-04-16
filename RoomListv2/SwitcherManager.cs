@@ -11,8 +11,6 @@ namespace RoomListv2
     {
 
         List<Switcher> Switchers;
-        ThreeSeriesTcpIpEthernetIntersystemCommunications EISC;
-
         public SwitcherManager(List<ThreeSeriesTcpIpEthernetIntersystemCommunications> eiscs)
         {
             Switchers = new List<Switcher>();
@@ -33,29 +31,29 @@ namespace RoomListv2
             Switchers[2].SendingSlots.Add(new SwitcherSlot(109, 85));
         }
 
-        bool RouteAvailable(uint sendingSwitcher, uint receivingSwitcher)
+        public bool RouteAvailable(uint sendingSwitcher, uint receivingSwitcher, uint sendingRoomId)
         {
             if (Math.Abs(sendingSwitcher - receivingSwitcher) == 1)
             {
-                return SingleRouteAvailable(sendingSwitcher, receivingSwitcher);
+                return SingleRouteAvailable(sendingSwitcher, receivingSwitcher, sendingRoomId);
             }
 
             if ((int)(sendingSwitcher - receivingSwitcher) == -2)
             {
-                if (SingleRouteAvailable(sendingSwitcher, sendingSwitcher + 1) &&
-                    SingleRouteAvailable(sendingSwitcher + 1, sendingSwitcher + 2))
+                if (SingleRouteAvailable(sendingSwitcher, sendingSwitcher + 1, sendingRoomId) &&
+                    SingleRouteAvailable(sendingSwitcher + 1, sendingSwitcher + 2, sendingRoomId))
                     return true;
             }
             else if (((int)(sendingSwitcher - receivingSwitcher) == 2))
             {
-                if (SingleRouteAvailable(sendingSwitcher, sendingSwitcher - 1) &&
-                    SingleRouteAvailable(sendingSwitcher - 1, sendingSwitcher + 2))
+                if (SingleRouteAvailable(sendingSwitcher, sendingSwitcher - 1, sendingRoomId) &&
+                    SingleRouteAvailable(sendingSwitcher - 1, sendingSwitcher + 2, sendingRoomId))
                     return true;
             }
             return false;
         }
 
-        private bool SingleRouteAvailable(uint sendingSwitcher, uint receivingSwitcher)
+        private bool SingleRouteAvailable(uint sendingSwitcher, uint receivingSwitcher, uint sendingRoomID)
         {
             foreach (Switcher switcher in Switchers)
             {
@@ -63,20 +61,20 @@ namespace RoomListv2
                 {
                     if (sendingSwitcher == 2 && receivingSwitcher == 1)
                     {
-                        if (switcher.SendingSlots[2].Available || switcher.SendingSlots[3].Available)
+                        if (switcher.SendingSlots[2].Available || switcher.SendingSlots[3].Available || switcher.SendingSlots[2].SendingRoomID == sendingRoomID || switcher.SendingSlots[3].SendingRoomID == sendingRoomID)
                         {
                             return true;
                         }
                     }
                     else if (sendingSwitcher == 2 && receivingSwitcher == 3)
                     {
-                        if (switcher.SendingSlots[0].Available || switcher.SendingSlots[1].Available)
+                        if (switcher.SendingSlots[0].Available || switcher.SendingSlots[1].Available || switcher.SendingSlots[0].SendingRoomID == sendingRoomID || switcher.SendingSlots[1].SendingRoomID == sendingRoomID)
                         {
                             return true;
                         }
                     }
                     else
-                        return switcher.PathAvailable();
+                        return switcher.PathAvailable(sendingRoomID);
                 }
             }
             return false;
@@ -84,6 +82,7 @@ namespace RoomListv2
 
         public RoomInputValues AttachSendingRoom(uint sendingRoomID, uint sendingSwitcher, uint receivingRoomID, uint receivingSwitcher, RoomInputValues roomValues)
         {
+
             RoomInputValues roomInputVals;
             #region Single Switcher Logic
             if ((Math.Abs(sendingSwitcher - receivingSwitcher) == 1) && sendingSwitcher != 2)
@@ -94,22 +93,22 @@ namespace RoomListv2
             {
                 if (sendingSwitcher == 2 && receivingSwitcher == 3)
                 {
-                    if (Switchers[(int)sendingSwitcher - 1].SendingSlots[0].Available)
+                    if (Switchers[(int)sendingSwitcher - 1].SendingSlots[0].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[0].SendingRoomID == sendingRoomID)
                     {
                         return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues, 0);
                     }
-                    else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[1].Available)
+                    else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[1].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[1].SendingRoomID == sendingRoomID)
                     {
                         return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues, 1);
                     }
                 }
                 else if (sendingSwitcher == 2 && receivingSwitcher == 1)
                 {
-                    if (Switchers[(int)sendingSwitcher - 1].SendingSlots[2].Available)
+                    if (Switchers[(int)sendingSwitcher - 1].SendingSlots[2].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[2].SendingRoomID == sendingRoomID)
                     {
                         return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues, 2);
                     }
-                    else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[3].Available)
+                    else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[3].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[3].SendingRoomID == sendingRoomID)
                     {
                         return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues, 3);
                     }
@@ -120,11 +119,11 @@ namespace RoomListv2
             else if ((int)(sendingSwitcher - receivingSwitcher) == -2)
             {
                 roomInputVals = Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues);
-                if (Switchers[(int)sendingSwitcher - 1].SendingSlots[0].Available)
+                if (Switchers[(int)sendingSwitcher - 1].SendingSlots[0].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[0].SendingRoomID == sendingRoomID)
                 {
                     return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomInputVals, 0);
                 }
-                else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[1].Available)
+                else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[1].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[1].SendingRoomID == sendingRoomID)
                 {
                     return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomInputVals, 1);
                 }
@@ -132,17 +131,18 @@ namespace RoomListv2
             else
             {
                 roomInputVals = Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues);
-                if (Switchers[(int)sendingSwitcher - 1].SendingSlots[2].Available)
+                if (Switchers[(int)sendingSwitcher - 1].SendingSlots[2].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[2].SendingRoomID == sendingRoomID)
                 {
                     return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomInputVals, 2);
                 }
-                else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[3].Available)
+                else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[3].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[3].SendingRoomID == sendingRoomID)
                 {
                     return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomInputVals, 3);
                 }
             }
             #endregion
-            return null;
+            CrestronConsole.PrintLine("Error!!! No Room attached in SwitcherManager AttachSendingRoom");
+            return new RoomInputValues();
         }
 
         public void ClearReceivingRoom(uint sendingRoomID, uint receivingRoomID)

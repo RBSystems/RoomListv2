@@ -1,0 +1,10 @@
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\bin\Debug\RoomListv2.dll
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\bin\Debug\RoomListv2.pdb
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\bin\Debug\Crestron.SimplSharpPro.DeviceSupport.dll
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\bin\Debug\Crestron.SimplSharpPro.EthernetCommunications.dll
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\bin\Debug\SimplSharpPro.exe
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\obj\Debug\RoomListv2.dll
+C:\Users\gschellhas\Desktop\sources\ListTest\RoomListv2\RoomListv2\obj\Debug\RoomListv2.pdb

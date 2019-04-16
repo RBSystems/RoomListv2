@@ -599,7 +599,9 @@ namespace RoomListv2
                     {
                         if ((roomID == item.ID) && item.SelectedForSending)
                         {
-                            CrestronConsole.PrintLine("Room: {0} Recieved Update Input", Name);   
+                            CrestronConsole.PrintLine("Room: {0} Recieved Update Input", Name);
+                            if(SwitcherDictionary[roomID] != SwitcherDictionary[ID])
+                                inputs = SwitcherManager.AttachSendingRoom(roomID, SwitcherDictionary[roomID], ID, SwitcherDictionary[ID], inputs); //Added for InterSwitcher Logic
                             processInputs(inputs, roomID, item.Name);
                         }
 
@@ -811,7 +813,8 @@ namespace RoomListv2
                     foreach (RoomListItem item in list)
                     {
                         if (item.AvailableForSending || item.SelectedForSending)
-                            outputRoomList[i].Add(item);
+                            if (SwitcherManager.RouteAvailable(SwitcherDictionary[item.ID], SwitcherDictionary[ID], item.ID)) //Added for InterSwitcher Logic
+                                outputRoomList[i].Add(item);
                     }
                     if (outputRoomList[i].Count() == 0)
                     {
@@ -829,6 +832,7 @@ namespace RoomListv2
                         foreach (RoomListItem item in list)
                         {
                             if (item.AvailableForReceiving || item.SelectedForReceiving)
+                                if (SwitcherManager.RouteAvailable(SwitcherDictionary[ID], SwitcherDictionary[item.ID], ID)) //Added for InterSwitcher Logic
                                 outputRoomList[i].Add(item);
                         }
                         if (outputRoomList[i].Count() == 0)

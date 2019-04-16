@@ -181,12 +181,18 @@ namespace RoomListv2
                     }
                     for (uint i = 0; i < 3; i++)
                     {
-                        SwitcherEISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 240), "127.0.0.2", this));
+                        SwitcherEISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 233), "127.0.0.2", this));
                     }
                 }
                 #endregion
-
-                switcherManager = new SwitcherManager(SwitcherEISCs);
+                try
+                {
+                    switcherManager = new SwitcherManager(SwitcherEISCs);
+                }
+                catch(Exception e)
+                {
+                    ErrorLog.Error("SwitchManager Error, Error in InitializeSystem: {0}", e.Message);   
+                }
 
                 #region Room Class Instantiate Rooms
                 rooms = new List<Room>();
