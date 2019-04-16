@@ -228,6 +228,14 @@ namespace RoomListv2
                             ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
                         }
                     }
+
+                    foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in SwitcherEISCs)
+                    {
+                        if (eisc.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                        {
+                            ErrorLog.Error("Error in Registering EISC: {0}", eisc.RegistrationFailureReason);
+                        }
+                    }
                 }
                 #endregion
 

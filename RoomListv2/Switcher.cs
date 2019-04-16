@@ -17,6 +17,7 @@ namespace RoomListv2
         {
             SwitcherID = switcherID;
             Outputs = new List<uint>();
+            SendingSlots = new List<SwitcherSlot>();
             EISC = _eisc;
         }
 

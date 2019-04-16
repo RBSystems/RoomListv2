@@ -17,10 +17,17 @@ namespace RoomListv2
             uint i = 1;
             foreach (ThreeSeriesTcpIpEthernetIntersystemCommunications eisc in eiscs)
             {
-                Switchers.Add(new Switcher(i, eisc)); //Switchers[0]
-                i++;
+                try
+                {
+                    Switchers.Add(new Switcher(i, eisc)); //Switchers[0]
+                    i++;
+                }
+                catch (Exception e)
+                {
+                    ErrorLog.Error("Error In Switcher Manager Adding Switchers");
+                }
             }
-
+            try{
             Switchers[0].SendingSlots.Add(new SwitcherSlot(41, 41));
             Switchers[0].SendingSlots.Add(new SwitcherSlot(45, 45));
             Switchers[1].SendingSlots.Add(new SwitcherSlot(89, 73));
@@ -29,6 +36,9 @@ namespace RoomListv2
             Switchers[1].SendingSlots.Add(new SwitcherSlot(85, 69));
             Switchers[2].SendingSlots.Add(new SwitcherSlot(105, 81));
             Switchers[2].SendingSlots.Add(new SwitcherSlot(109, 85));
+            }catch(Exception e)
+            {ErrorLog.Error("Error In Switcher Manager Adding Switcher Slots");
+            }
         }
 
         public bool RouteAvailable(uint sendingSwitcher, uint receivingSwitcher, uint sendingRoomId)
