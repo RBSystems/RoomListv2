@@ -16,7 +16,7 @@ namespace RoomListv2
         {
             Displays = new List<VideoSource>();
             Cameras = new List<VideoSource>();
-            AudioValue = 0;
+            AudioValue = 41;
             for (int i = 0; i < 4; i++)
             { 
                 Displays.Add(new VideoSource());
@@ -47,7 +47,7 @@ namespace RoomListv2
             {
                 source.reset();
             }
-            AudioValue = 0;
+            AudioValue = 41;
         }
 
         public override string ToString()

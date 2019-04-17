@@ -1051,6 +1051,11 @@ namespace RoomListv2
                 _eisc.BooleanInput[x].BoolValue = true;
                 x++;
             }
+            while (x < 155)
+            {
+                _eisc.BooleanInput[x].BoolValue = false;
+                x++;
+            }
             #endregion
 
             #region List Button Checked

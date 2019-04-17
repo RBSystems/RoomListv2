@@ -57,7 +57,7 @@ namespace RoomListv2
             _inputValues.Displays[3].enabled = false;
             _inputValues.Cameras[0].InputValue = Inputs[2];
             _inputValues.Cameras[1].InputValue = Inputs[3];
-            _inputValues.Cameras[1].enabled = false;
+            _inputValues.Cameras[2].enabled = false;
             CrestronConsole.Print("Sending Room ID: {0} || ", SendingRoomID);
             foreach(uint receivingRoom in ReceivingRoomIDs)
             {

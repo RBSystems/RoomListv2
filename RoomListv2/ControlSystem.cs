@@ -77,12 +77,13 @@ namespace RoomListv2
                 {
                     EISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
                     SwitcherEISCs = new List<ThreeSeriesTcpIpEthernetIntersystemCommunications>();
+                    /*  //Uncomment for In House Testing
                     for (uint i = 0; i < 36; i++)
                     {
                         EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "127.0.0.2", this));
                     }
-                    /*
-                    for (uint i = 0; i < 36; i++)
+                    */
+                    for (uint i = 0; i < 36; i++)  //Comment out For In House Testing
                     {
                         if (i < 2)
                             EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.202", this));
@@ -100,11 +101,12 @@ namespace RoomListv2
                             EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.117", this));
 
                     }
-                    */
-                    for (uint i = 0; i < 3; i++)
-                    {
-                        SwitcherEISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 233), "127.0.0.2", this));
-                    }
+                    
+
+                    SwitcherEISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((233), "127.0.0.2", this));
+                    SwitcherEISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((234), "172.16.121.44", this));
+                    SwitcherEISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((235), "172.16.121.115", this));
+
                 }
                 #endregion
                 try
