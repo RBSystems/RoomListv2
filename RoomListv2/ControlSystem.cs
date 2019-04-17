@@ -83,22 +83,22 @@ namespace RoomListv2
                         EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "127.0.0.2", this));
                     }
                     */
-                    for (uint i = 0; i < 36; i++)  //Comment out For In House Testing
+                    for (uint i = 0; i < 37; i++)  //Comment out For In House Testing
                     {
-                        if (i < 2)
-                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.202", this));
-                        else if (i < 7)
-                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.44", this));
-                        else if (i < 14)
-                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.45", this));
-                        else if (i < 19)
-                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.46", this));
-                        else if (i < 24)
-                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.115", this));
+                        if (i < 3)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.202", this));
+                        else if (i < 8)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.44", this));
+                        else if (i < 15)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.45", this));
+                        else if (i < 20)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.46", this));
+                        else if (i < 25)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.115", this));
                         else if (i < 30)
-                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.116", this));
-                        else if (i < 36)
-                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 192), "172.16.121.117", this));
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.116", this));
+                        else if (i < 37)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.117", this));
 
                     }
                     
@@ -121,7 +121,7 @@ namespace RoomListv2
                 #region Room Class Instantiate Rooms
                 rooms = new List<Room>();
 
-                for (uint i = 0; i < 36; i++)
+                for (uint i = 0; i < 37; i++)
                 {
                     rooms.Add(new Room(i + 1, String.Format("Room {0}", i + 1), roomSwitcherDictionary, EISCs[(int)i], switcherManager));
                 }
@@ -273,17 +273,17 @@ namespace RoomListv2
             roomListDictionary = new Dictionary<uint, uint>();  //Create a new Dictionary to hold the list of rooms and their list number they belong in
             for (uint i = 1; i <= numberOfRooms; i++)
             {
-                if (i < 16)
+                if (i < 17)
                     roomListDictionary.Add(i, 1);
-                else if (i < 18)
+                else if (i < 19)
                     roomListDictionary.Add(i, 2);
-                else if (i < 25)
+                else if (i < 26)
                     roomListDictionary.Add(i, 3);
-                else if (i < 29)
+                else if (i < 30)
                     roomListDictionary.Add(i, 4);
-                else if (i < 34)
+                else if (i < 35)
                     roomListDictionary.Add(i, 5);
-                else if (i <= 36)
+                else if (i <= 37)
                     roomListDictionary.Add(i, 6);
             }
 
@@ -293,11 +293,11 @@ namespace RoomListv2
             roomSwitcherDictionary = new Dictionary<uint, uint>(); //Use this to pick which rooms go where
             for (uint i = 1; i <= numberOfRooms; i++)
             {
-                if (i < 3)
+                if (i < 4)
                     roomSwitcherDictionary.Add(i, 1);
-                else if (i < 20)
+                else if (i < 21)
                     roomSwitcherDictionary.Add(i, 2);
-                else if (i <= 36)
+                else if (i <= 37)
                     roomSwitcherDictionary.Add(i, 3);
             }
         }
