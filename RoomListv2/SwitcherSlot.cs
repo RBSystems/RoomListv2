@@ -72,22 +72,22 @@ namespace RoomListv2
             if (ReceivingRoomIDs.Contains(receivingRoomID))
             {
                 ReceivingRoomIDs.Remove(receivingRoomID);
-                CrestronConsole.PrintLine("Removing Receiving Room ID: {0}", receivingRoomID);
+                //CrestronConsole.PrintLine("Removing Receiving Room ID: {0}", receivingRoomID);
             }
             if (ReceivingRoomIDs.Count == 0)
             {
                 SendingRoomID = 0;
-                CrestronConsole.PrintLine("Setting Slot to Available!");
+                //CrestronConsole.PrintLine("Setting Slot to Available!");
                 Available = true;
                 RouteValues.Reset();
                 return true;
             }
-            CrestronConsole.Print("Sending Room ID: {0} || ", SendingRoomID);
+            //CrestronConsole.Print("Sending Room ID: {0} || ", SendingRoomID);
             foreach (uint receivingRoom in ReceivingRoomIDs)
             {
-                CrestronConsole.Print("Receiving Room ID: {0} || ", receivingRoom);
+                //CrestronConsole.Print("Receiving Room ID: {0} || ", receivingRoom);
             }
-            CrestronConsole.PrintLine("=================");
+            //CrestronConsole.PrintLine("=================");
             return false;
         }
     }

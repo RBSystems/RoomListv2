@@ -43,31 +43,31 @@ namespace RoomListv2
 
         public bool RouteAvailable(uint sendingSwitcher, uint receivingSwitcher, uint sendingRoomId)
         {
-            CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher {1} receiving {2}", sendingRoomId, sendingSwitcher, receivingSwitcher);
+            //CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher {1} receiving {2}", sendingRoomId, sendingSwitcher, receivingSwitcher);
             if (((int)sendingSwitcher - (int)receivingSwitcher) == 1)
             {
-                CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher - receiving == 1", sendingRoomId);
+                //CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher - receiving == 1", sendingRoomId);
                 return SingleRouteAvailable(sendingSwitcher, receivingSwitcher, sendingRoomId);
             }
 
             else if (((int)sendingSwitcher - (int)receivingSwitcher) == -1)
             {
-                CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher - receiving == -1", sendingRoomId);
+                //CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher - receiving == -1", sendingRoomId);
                 return SingleRouteAvailable(sendingSwitcher, receivingSwitcher, sendingRoomId);
             }
 
             else if (((int)sendingSwitcher - (int)receivingSwitcher) == -2)
             {
-                CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher - receiving == -2", sendingRoomId);
+                //CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher - receiving == -2", sendingRoomId);
                 if (SingleRouteAvailable(sendingSwitcher, sendingSwitcher + 1, sendingRoomId) &&
                     SingleRouteAvailable(sendingSwitcher + 1, sendingSwitcher + 2, sendingRoomId))
                     return true;
             }
             else if (((int)sendingSwitcher - (int)receivingSwitcher) == 2)
             {
-                CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher - receiving == 2", sendingRoomId);
+                //CrestronConsole.PrintLine("Room ID: {0} Checking Route Available sendingSwitcher - receiving == 2", sendingRoomId);
                 if (SingleRouteAvailable(sendingSwitcher, sendingSwitcher - 1, sendingRoomId) &&
-                    SingleRouteAvailable(sendingSwitcher - 1, sendingSwitcher + 2, sendingRoomId))
+                    SingleRouteAvailable(sendingSwitcher - 1, sendingSwitcher - 2, sendingRoomId))
                     return true;
             }
             return false;
@@ -81,7 +81,7 @@ namespace RoomListv2
                 {
                     if (sendingSwitcher == 2 && receivingSwitcher == 1)
                     {
-                        CrestronConsole.PrintLine("sendingRoomID: {0} Checking if sending swithcer == 2, and receiving switcher == 1 path is avaiable", sendingRoomID);
+                        //CrestronConsole.PrintLine("sendingRoomID: {0} Checking if sending swithcer == 2, and receiving switcher == 1 path is avaiable", sendingRoomID);
                         if (switcher.SendingSlots[2].Available || switcher.SendingSlots[3].Available || switcher.SendingSlots[2].SendingRoomID == sendingRoomID || switcher.SendingSlots[3].SendingRoomID == sendingRoomID)
                         {
                             
@@ -90,7 +90,7 @@ namespace RoomListv2
                     }
                     else if (sendingSwitcher == 2 && receivingSwitcher == 3)
                     {
-                        CrestronConsole.PrintLine("sendingRoomID: {0} Checking if sending swithcer == 2, and receiving switcher == 3 path is avaiable", sendingRoomID);
+                        //CrestronConsole.PrintLine("sendingRoomID: {0} Checking if sending swithcer == 2, and receiving switcher == 3 path is avaiable", sendingRoomID);
                         if (switcher.SendingSlots[0].Available || switcher.SendingSlots[1].Available || switcher.SendingSlots[0].SendingRoomID == sendingRoomID || switcher.SendingSlots[1].SendingRoomID == sendingRoomID)
                         {
 
@@ -99,7 +99,7 @@ namespace RoomListv2
                     }
                     else
                     {
-                        CrestronConsole.PrintLine("sendingRoomID: {0} Calling switcher.PathAvailable", sendingRoomID);
+                        //CrestronConsole.PrintLine("sendingRoomID: {0} Calling switcher.PathAvailable", sendingRoomID);
                         return switcher.PathAvailable(sendingRoomID);
                     }
                 }
@@ -109,48 +109,48 @@ namespace RoomListv2
 
         public RoomInputValues AttachSendingRoom(uint sendingRoomID, uint sendingSwitcher, uint receivingRoomID, uint receivingSwitcher, RoomInputValues roomValues)
         {
-            CrestronConsole.PrintLine("Sending Room ID {0} Called AttacheSendingRoom, Sending Switcher {1}, Receiving Room ID {2}, ReceivingSwitcher {3}", sendingRoomID, sendingSwitcher, receivingRoomID, receivingSwitcher);
+            //CrestronConsole.PrintLine("Sending Room ID {0} Called AttacheSendingRoom, Sending Switcher {1}, Receiving Room ID {2}, ReceivingSwitcher {3}", sendingRoomID, sendingSwitcher, receivingRoomID, receivingSwitcher);
             RoomInputValues roomInputVals;
             #region Single Switcher Logic
             if ((((int)sendingSwitcher - (int)receivingSwitcher) == 1) && sendingSwitcher != 2)
             {
-                CrestronConsole.PrintLine("Sending Switcher - Receiving Switcher = 1 and Switcher != 2");
+                //CrestronConsole.PrintLine("Sending Switcher - Receiving Switcher = 1 and Switcher != 2");
                 return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues);
             }
             else if((((int)sendingSwitcher - (int)receivingSwitcher) == -1) && sendingSwitcher != 2)
             {
-                CrestronConsole.PrintLine("Sending Switcher - Receiving Switcher = -1 and Switcher != 2");
+                //CrestronConsole.PrintLine("Sending Switcher - Receiving Switcher = -1 and Switcher != 2");
                 return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues);
             }
 
             else if (((((int)sendingSwitcher - (int)receivingSwitcher) == 1) || (((int)sendingSwitcher - (int)receivingSwitcher) == -1)) && sendingSwitcher == 2)
             {
-                CrestronConsole.PrintLine("Sending Switcher - Receiving Switcher = -1 or 1 and Sending Switcher == 2");
+                //CrestronConsole.PrintLine("Sending Switcher - Receiving Switcher = -1 or 1 and Sending Switcher == 2");
                 if (sendingSwitcher == 2 && receivingSwitcher == 3)
                 {
-                    CrestronConsole.PrintLine("Sending Switcher = 2 and Receiving Switcher = 3 and Sending Switcher == 2");
+                    //CrestronConsole.PrintLine("Sending Switcher = 2 and Receiving Switcher = 3 and Sending Switcher == 2");
                     if (Switchers[(int)sendingSwitcher - 1].SendingSlots[0].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[0].SendingRoomID == sendingRoomID)
                     {
-                        CrestronConsole.PrintLine("Sending switcher Slot 0 is available or Sending Room ID Already in SendingSlot");
+                        //CrestronConsole.PrintLine("Sending switcher Slot 0 is available or Sending Room ID Already in SendingSlot");
                         return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues, 0);
                     }
                     else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[1].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[1].SendingRoomID == sendingRoomID)
                     {
-                        CrestronConsole.PrintLine("Sending switcher Slot 1 is available or Sending Room ID Already in SendingSlot");
+                        //CrestronConsole.PrintLine("Sending switcher Slot 1 is available or Sending Room ID Already in SendingSlot");
                         return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues, 1);
                     }
                 }
                 else if (sendingSwitcher == 2 && receivingSwitcher == 1)
                 {
-                    CrestronConsole.PrintLine("Sending Switcher = 2 and Receiving Switcher = 1 and Sending Switcher == 2");
+                    //CrestronConsole.PrintLine("Sending Switcher = 2 and Receiving Switcher = 1 and Sending Switcher == 2");
                     if (Switchers[(int)sendingSwitcher - 1].SendingSlots[2].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[2].SendingRoomID == sendingRoomID)
                     {
-                        CrestronConsole.PrintLine("Sending switcher Slot 2 is available or Sending Room ID Already in SendingSlot");
+                        //CrestronConsole.PrintLine("Sending switcher Slot 2 is available or Sending Room ID Already in SendingSlot");
                         return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues, 2);
                     }
                     else if (Switchers[(int)sendingSwitcher - 1].SendingSlots[3].Available || Switchers[(int)sendingSwitcher - 1].SendingSlots[3].SendingRoomID == sendingRoomID)
                     {
-                        CrestronConsole.PrintLine("Sending switcher Slot 3 is available or Sending Room ID Already in SendingSlot");
+                        //CrestronConsole.PrintLine("Sending switcher Slot 3 is available or Sending Room ID Already in SendingSlot");
                         return Switchers[(int)sendingSwitcher - 1].AddSlot(sendingRoomID, receivingRoomID, roomValues, 3);
                     }
                 }
@@ -182,7 +182,7 @@ namespace RoomListv2
                 }
             }
             #endregion
-            CrestronConsole.PrintLine("Error!!! No Room attached in SwitcherManager AttachSendingRoom");
+            //CrestronConsole.PrintLine("Error!!! No Room attached in SwitcherManager AttachSendingRoom");
             return new RoomInputValues();
         }
 

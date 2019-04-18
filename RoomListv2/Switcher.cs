@@ -37,7 +37,7 @@ namespace RoomListv2
             foreach(SwitcherSlot slot in SendingSlots)
                 if (slot.Available || slot.SendingRoomID == sendingRoomID)
                 {
-                    CrestronConsole.PrintLine("Slot available or room is already sending");
+                    //CrestronConsole.PrintLine("Slot available or room is already sending");
                     _inputValues = new RoomInputValues(slot.AddSlot(sendingRoomID, receivingRoomID, inputValues));
                     UpdateOutputs();
                     return _inputValues;

@@ -383,7 +383,7 @@ namespace RoomListv2
                     switch (args.Sig.Number)
                     {
                         case 1: //Room Name
-                            CrestronConsole.PrintLine("Room ID: {0} Incoming Room Name", ID, args.Sig.StringValue); 
+                            //CrestronConsole.PrintLine("Room ID: {0} Incoming Room Name", ID, args.Sig.StringValue); 
                             SetRoomName(args.Sig.StringValue);
                             break;
                         case 2: //Display 1 Name
@@ -536,7 +536,7 @@ namespace RoomListv2
                     {
                         if (item.ID == id)
                         {
-                            CrestronConsole.PrintLine("Room: {0} Recieved Reply from Sending Room", Name);
+                            //CrestronConsole.PrintLine("Room: {0} Recieved Reply from Sending Room", Name);
                             //processInputs(inputs, id, roomName);
                             item.SelectedForSending = true;
                             StartOneshotThread();
@@ -659,6 +659,7 @@ namespace RoomListv2
         {
             if (Enabled)
             {
+                processInputsAndClear();
                 if (roomID == 0)
                 {
                     foreach (List<RoomListItem> list in roomList)
@@ -686,6 +687,7 @@ namespace RoomListv2
                             if (roomID == item.ID)
                             {
                                 item.SelectedForSending = false;
+                                processInputsAndClear();
                                 StartUpdateInputTimer();
                                 if (requestConnectionEvent != null)
                                 {
@@ -758,7 +760,7 @@ namespace RoomListv2
                 OverflowEnabled = state;
                 if (!OverflowEnabled)
                     ClearReceivingRoomsButton(0);
-                CrestronConsole.PrintLine("Overflow just enabled: {0}", OverflowEnabled);
+                //CrestronConsole.PrintLine("Overflow just enabled: {0}", OverflowEnabled);
                 AvailabilityNeedsUpdate(true);
                 StartUpdateInputTimer();
             }
@@ -789,7 +791,7 @@ namespace RoomListv2
         /// <param name="_name">Name of the New Room Name</param>
         public void SetRoomName(string _name)
         {
-            CrestronConsole.PrintLine("Room ID: {0} Updating Room Name: {1}", ID, _name);
+            //CrestronConsole.PrintLine("Room ID: {0} Updating Room Name: {1}", ID, _name);
             Name = _name;
             if (updateEvent != null)
                 updateEvent(this, new UpdateEventArgs { name = _name });
@@ -818,7 +820,7 @@ namespace RoomListv2
                     {
                         if (item.AvailableForSending || item.SelectedForSending)
                         {
-                            CrestronConsole.PrintLine("Room: {0} Checking if Available for Sending", Name);
+                            //CrestronConsole.PrintLine("Room: {0} Checking if Available for Sending", Name);
                             if(SwitcherDictionary[ID] == SwitcherDictionary[item.ID])
                             {
                                 outputRoomList[i].Add(item);
@@ -846,7 +848,7 @@ namespace RoomListv2
                         {
                             if (item.AvailableForReceiving || item.SelectedForReceiving)
                             {
-                                CrestronConsole.PrintLine("Room: {0} Checking if Available for Receiving", Name);
+                                //CrestronConsole.PrintLine("Room: {0} Checking if Available for Receiving", Name);
                                 if(SwitcherDictionary[ID] == SwitcherDictionary[item.ID])
                                 {
                                     outputRoomList[i].Add(item);
@@ -930,7 +932,7 @@ namespace RoomListv2
         }
         private void ProcessEISC(object o)
         {
-            CrestronConsole.PrintLine("Room: {0} Process EISC Called", Name);
+            //CrestronConsole.PrintLine("Room: {0} Process EISC Called", Name);
             try
             {
                 UpdateEISCSignals();
@@ -942,13 +944,13 @@ namespace RoomListv2
         }
         public void processInputs(RoomInputValues inputValues, uint roomID, string roomName)
         {
-            //CrestronConsole.PrintLine("Room: {0} Process Inputs Called", Name);
+            CrestronConsole.PrintLine("Room: {0} Process Inputs Called", Name);
             ReveivingRoomName = roomName;
             CrestronConsole.PrintLine("{0}", inputValues.ToString());
             if (SwitcherDictionary[roomID] == SwitcherDictionary[ID])
             {
                 //CrestronConsole.PrintLine("Process Inputs Called inside same switcher");
-                ReceivingInputValues = inputValues;
+                ReceivingInputValues = new RoomInputValues(inputValues);
                 //CrestronConsole.PrintLine("Display Availability: {0}", inputValues.Displays[0].enabled);
                 StartUpdateEISCTimer();
             }
@@ -965,7 +967,7 @@ namespace RoomListv2
         }
         public void processInputsAndClear()
         {
-            //CrestronConsole.PrintLine("Process Inputs and Clear Called Room: {0}", ID);
+            CrestronConsole.PrintLine("Process Inputs and Clear Called Room: {0}", ID);
             ReceivingInputValues.Reset();
             ReveivingRoomName = String.Empty;
             StartUpdateEISCTimer();
@@ -975,19 +977,19 @@ namespace RoomListv2
             //CrestronConsole.PrintLine("Room: {0} Updating EISC", Name);
             #region UpdateBools
             //Displays and Cameras
-            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 2: {1}", Name, ReceivingInputValues.Displays[0].enabled);
+            //CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 2: {1}", Name, ReceivingInputValues.Displays[0].enabled);
             _eisc.BooleanInput[2].BoolValue = ReceivingInputValues.Displays[0].enabled;
-            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 4: {1}", Name, ReceivingInputValues.Displays[1].enabled);
+            //CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 4: {1}", Name, ReceivingInputValues.Displays[1].enabled);
             _eisc.BooleanInput[4].BoolValue = ReceivingInputValues.Displays[1].enabled;
-            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 6: {1}", Name, ReceivingInputValues.Displays[2].enabled);
+            //CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 6: {1}", Name, ReceivingInputValues.Displays[2].enabled);
             _eisc.BooleanInput[6].BoolValue = ReceivingInputValues.Displays[2].enabled;
-            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 8: {1}", Name, ReceivingInputValues.Displays[3].enabled);
+            //CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 8: {1}", Name, ReceivingInputValues.Displays[3].enabled);
             _eisc.BooleanInput[8].BoolValue = ReceivingInputValues.Displays[3].enabled;
-            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 10: {1}", Name, ReceivingInputValues.Cameras[0].enabled);
+            //CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 10: {1}", Name, ReceivingInputValues.Cameras[0].enabled);
             _eisc.BooleanInput[10].BoolValue = ReceivingInputValues.Cameras[0].enabled;
-            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 12: {1}", Name, ReceivingInputValues.Cameras[1].enabled);
+            //CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 12: {1}", Name, ReceivingInputValues.Cameras[1].enabled);
             _eisc.BooleanInput[12].BoolValue = ReceivingInputValues.Cameras[1].enabled;
-            CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 14: {1}", Name, ReceivingInputValues.Cameras[2].enabled);
+            //CrestronConsole.PrintLine("Room: {0} Updating Bool Sig 14: {1}", Name, ReceivingInputValues.Cameras[2].enabled);
             _eisc.BooleanInput[14].BoolValue = ReceivingInputValues.Cameras[2].enabled;
 
             //_eisc.BooleanInput[81].BoolValue; //Send to System to Notify to Shutdown if Sending Room Drops Send Used in this Function:RecievedRequestFromSenderToRemove() and ProcessUpdate()
@@ -1134,11 +1136,9 @@ namespace RoomListv2
             _eisc.UShortInput[20].UShortValue = (ushort)ReceivingInputValues.Displays[3].InputValue;
             _eisc.UShortInput[21].UShortValue = (ushort)ReceivingInputValues.Displays[3].IconValue;
             _eisc.UShortInput[22].UShortValue = (ushort)ReceivingInputValues.Cameras[0].InputValue;
-            _eisc.UShortInput[23].UShortValue = (ushort)ReceivingInputValues.Cameras[0].IconValue;
-            _eisc.UShortInput[24].UShortValue = (ushort)ReceivingInputValues.Cameras[1].InputValue;
-            _eisc.UShortInput[25].UShortValue = (ushort)ReceivingInputValues.Cameras[1].IconValue;
-            _eisc.UShortInput[26].UShortValue = (ushort)ReceivingInputValues.Cameras[2].InputValue;
-            _eisc.UShortInput[27].UShortValue = (ushort)ReceivingInputValues.Cameras[2].IconValue;
+            _eisc.UShortInput[23].UShortValue = (ushort)ReceivingInputValues.Cameras[1].InputValue;
+            _eisc.UShortInput[24].UShortValue = (ushort)ReceivingInputValues.Cameras[2].InputValue;
+
             _eisc.UShortInput[32].UShortValue = (ushort)ReceivingInputValues.AudioValue;
 
             #endregion

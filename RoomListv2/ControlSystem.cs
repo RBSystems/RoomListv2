@@ -68,8 +68,8 @@ namespace RoomListv2
             {
                 #region Room Class: Initialize roomListDictionary
                 //Creates the Dictionary that holds the roomID and what list that roomID should live
-                BuildRoomListDictionary(36);
-                BuildRoomSwitcherDictionary(36);
+                BuildRoomListDictionary(37);
+                BuildRoomSwitcherDictionary(37);
                 #endregion
 
                 #region EISC Creation
@@ -84,8 +84,9 @@ namespace RoomListv2
                     }
                     */
                     for (uint i = 0; i < 37; i++)  //Comment out For In House Testing
-                    {
-                        if (i < 3)
+                    {   if (i < 1)
+                            EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "127.0.0.2", this));
+                        else if (i < 3)
                             EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.202", this));
                         else if (i < 8)
                             EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.44", this));
@@ -95,7 +96,7 @@ namespace RoomListv2
                             EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.46", this));
                         else if (i < 25)
                             EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.115", this));
-                        else if (i < 30)
+                        else if (i < 31)
                             EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.116", this));
                         else if (i < 37)
                             EISCs.Add(new ThreeSeriesTcpIpEthernetIntersystemCommunications((i + 191), "172.16.121.117", this));
